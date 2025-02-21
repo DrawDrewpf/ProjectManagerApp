@@ -7,7 +7,6 @@ import SelectInput from "@/Components/SelectInput";
 import TableHeading from "@/Components/DataTables/TableHeading";
 import { useState, useEffect, useCallback } from 'react';
 
-import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 
 export default function Index({ auth, projects, queryParams = null }) {
 
