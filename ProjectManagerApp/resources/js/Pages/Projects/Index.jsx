@@ -4,25 +4,38 @@ import { Head, Link, router } from "@inertiajs/react";
 import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from "@/constants.js";
 import TextInput from "@/Components/TextInput";
 import SelectInput from "@/Components/SelectInput";
+import { useState, useEffect, useCallback } from 'react';
 
 export default function Index({ auth, projects, queryParams = null }) {
 
     queryParams = queryParams || {};
 
-    const searchfieldsChanged = (name, value) => {
-        if (value) {
-            queryParams[name] = value;
-        } else {
-            delete queryParams[name];
-        }
-        router.get(route('projects.index', queryParams));
-    }
+    const [debouncedQueryParams, setDebouncedQueryParams] = useState(queryParams);
 
-    const onKeyPress = (name, e) => {
-        if (e.key === 'Enter') {
-            searchfieldsChanged(name, e.target.value);
-        }
-    }
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(() => {
+                func(...args);
+            }, delay);
+        };
+    };
+
+    const searchfieldsChanged = (name, value) => {
+        setDebouncedQueryParams(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const debouncedSearchfieldsChanged = useCallback(debounce(searchfieldsChanged, 300), []);
+
+    useEffect(() => {
+        router.get(route('projects.index', debouncedQueryParams), {}, { preserveState: true });
+    }, [debouncedQueryParams]);
 
     return (
         <AuthenticatedLayout
@@ -60,15 +73,14 @@ export default function Index({ auth, projects, queryParams = null }) {
                                                 className="w-full"
                                                 defaultValue={queryParams.name}
                                                 placeholder="Project Name"
-                                                onBlur={e => searchfieldsChanged('name', e.target.value)}
-                                                onKeyPress={e => onKeyPress('name', e)}
+                                                onChange={e => debouncedSearchfieldsChanged('name', e.target.value)}
                                             />
                                         </th>
                                         <th className="px-3 py-4">
                                             <SelectInput 
                                             className="w-full"
                                             defaultValue={queryParams.status}
-                                            onChange={e => searchfieldsChanged('status', e.target.value)} >
+                                            onChange={e => debouncedSearchfieldsChanged('status', e.target.value)} >
                                                 <option value="">Select Status</option>
                                                 <option value="pending">Pending</option>
                                                 <option value="in progress">In Progress</option>
@@ -88,8 +100,8 @@ export default function Index({ auth, projects, queryParams = null }) {
                                             <td className="px-3 py-4">{project.id}</td>
                                             <td className="px-3 py-4"><img src={project.image_path} alt={project.id} style={{ width: 60 }} /></td>
                                             <td className="px-3 py-4">{project.name}</td>
-                                            <td className="px-3 py-4 ">
-                                                <span className={"px-2 py-1 rounded text-white border-none " + PROJECT_STATUS_CLASS_MAP[project.status]}>
+                                            <td className="px-2 py-4 ">
+                                                <span className={"px-3 py-1.5 rounded text-white border-none " + PROJECT_STATUS_CLASS_MAP[project.status]}>
                                                     {PROJECT_STATUS_TEXT_MAP[project.status]}
                                                 </span>
                                             </td>
