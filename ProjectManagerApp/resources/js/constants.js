@@ -1,6 +1,6 @@
 export const PROJECT_STATUS_CLASS_MAP ={
     'pending': 'bg-yellow-500 text-white font-bold ',
-    'in progress': 'bg-blue-500 text-white font-bold',
+    'in progress': 'bg-blue-500 text-white font-bold ',
     'completed': 'bg-green-500 text-white font-bold',
 }
 
