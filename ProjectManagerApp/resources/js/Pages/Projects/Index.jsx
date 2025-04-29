@@ -61,9 +61,17 @@ export default function Index({ auth, projects, queryParams = null }) {
     return (
         <AuthenticatedLayout
             title={auth.user}
-            header={<h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                Projects
-            </h2>} >
+            header={
+            <div className="flex justify-between">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    Projects
+                </h2>
+                
+                <Link className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded" href={route('projects.create')}>
+                    Create New Project
+                </Link>
+            </div>
+            } >
 
             <Head title="Projects" />
 
@@ -159,7 +167,7 @@ export default function Index({ auth, projects, queryParams = null }) {
                                         {projects.data.map(project => (
                                             <tr key={project.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                 <td className="px-3 py-4">{project.id}</td>
-                                                <td className="px-3 py-4"><img src={project.image_path} alt={project.id} className="w-15 h-auto" /></td>
+                                                <td className="px-3 py-4"><img src={project.image_path} alt={project.id} className="w-12 h-12" /></td>
                                                 <td className="px-3 py-4">
                                                     <Link href={route('projects.show', project.id)} className="hover:underline text-white text-nowrap">
                                                         {project.name}

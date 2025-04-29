@@ -86,6 +86,14 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
+                            {/* Project Image */}
+                            <div className="mb-6">
+                                <img
+                                    src={project?.image_path || '/images/default_project.png'}
+                                    alt={projectName}
+                                    className="w-full h-48 object-cover rounded-lg shadow-md"
+                                />
+                            </div>
                             <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
                                 <h3 className="text-xl font-bold">Project Details</h3>
                                 <span className="text-sm text-gray-500 dark:text-gray-400">ID: {project?.id || 'N/A'}</span>
