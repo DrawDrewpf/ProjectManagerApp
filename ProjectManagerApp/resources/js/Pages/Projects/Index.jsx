@@ -6,6 +6,7 @@ import TextInput from "@/Components/TextInput";
 import SelectInput from "@/Components/SelectInput";
 import TableHeading from "@/Components/DataTables/TableHeading";
 import { useState, useEffect, useCallback } from 'react';
+import { Button } from "@headlessui/react";
 
 
 export default function Index({ auth, projects, queryParams = null }) {
@@ -57,20 +58,29 @@ export default function Index({ auth, projects, queryParams = null }) {
         });
     };
 
+    // Function to delete a project
+    // This function will be called when the delete button is clicked
+    const deleteProject = (project) => {
+        if (!window.confirm('Are you sure you want to delete this project?')) 
+        {
+            return;
+        }
+        router.delete(route('projects.destroy', project.id));
+    }
 
     return (
         <AuthenticatedLayout
             title={auth.user}
             header={
-            <div className="flex justify-between">
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Projects
-                </h2>
-                
-                <Link className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded" href={route('projects.create')}>
-                    Create New Project
-                </Link>
-            </div>
+                <div className="flex justify-between">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                        Projects
+                    </h2>
+
+                    <Link className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded" href={route('projects.create')}>
+                        Create New Project
+                    </Link>
+                </div>
             } >
 
             <Head title="Projects" />
@@ -181,9 +191,9 @@ export default function Index({ auth, projects, queryParams = null }) {
                                                 <td className="px-3 py-4">{project.created_at}</td>
                                                 <td className="px-3 py-4">{project.due_date}</td>
                                                 <td className="px-3 py-4">{project.createdBy.name}</td>
-                                                <td className="px-3 py-4">
+                                                <td className="px-3 py-4 flex">
                                                     <Link href={route('projects.edit', project.id)} className="font-medium text-white bg-blue-500 hover:bg-blue-600 mx-2 p-2 rounded-md">Edit</Link>
-                                                    <Link href={route('projects.destroy', project.id)} className="font-medium text-white bg-red-500 hover:bg-red-600 mx-2 p-2 rounded-md">Delete</Link>
+                                                    <Button onClick={e => deleteProject(project)} className="font-medium text-white bg-red-500 hover:bg-red-600 mx-2 p-2 rounded-md">Delete</Button>
                                                 </td>
                                             </tr>
                                         ))}
