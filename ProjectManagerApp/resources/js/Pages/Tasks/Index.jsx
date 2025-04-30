@@ -1,7 +1,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+
 import { Head, router } from "@inertiajs/react";
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from "@inertiajs/react";
+
 import TasksTable from "@/Pages/Tasks/TasksTable";
+
 
 
 export default function Index({ auth, tasks, queryParams = null }) {
@@ -55,9 +59,17 @@ export default function Index({ auth, tasks, queryParams = null }) {
     return (
         <AuthenticatedLayout
             title={auth.user}
-            header={<h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                Task
-            </h2>} >
+            header={
+                <div className="flex justify-between">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                        Task
+                    </h2>
+
+                    <Link className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded" href={route('tasks.create')}>
+                        Create New Task
+                    </Link>
+                </div>
+            } >
 
             <Head title="Tasks" />
 

@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Task;
+use App\Models\Project;
+use App\Models\User;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class TaskController extends Controller
 {
@@ -14,10 +21,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $query= Task::query();
+        $query = Task::query();
 
-        $sortField= request('sort_field', 'created_at');
-        $sortDirection= request('sort_direction',"desc");
+        $sortField = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', "desc");
 
         if (request('name')) {
             $query->where('name', 'like', '%' . request('name') . '%');
@@ -26,8 +33,8 @@ class TaskController extends Controller
             $query->where('status', request('status'));
         }
 
-        $tasks = $query->orderBy($sortField,$sortDirection) 
-        ->paginate(10);
+        $tasks = $query->orderBy($sortField, $sortDirection)
+            ->paginate(10);
 
         return inertia('Tasks/Index', [
 
@@ -41,7 +48,13 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        $projects = Project::all();
+        $users = User::all();
+
+        return inertia('Tasks/Create', [
+            'projects' => UserResource::collection($projects),
+            'users' => UserResource::collection($users),
+        ]);
     }
 
     /**
@@ -49,7 +62,17 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        //
+        $data = $request->validated();
+        $image = $data['image'] ?? null;
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
+        if ($image) {
+            $data['image_path'] = $image->store('task/' . Str::random(), 'public');
+        }
+        Task::create($data);
+
+        return to_route('tasks.index')
+            ->with('success', 'Task created successfully.');
     }
 
     /**
@@ -57,7 +80,9 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //
+        return inertia('Tasks/Show', [
+            'task' => new TaskResource($task),
+        ]);
     }
 
     /**
@@ -65,7 +90,14 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+        $projects = Project::all();
+        $users = User::all();
+
+        return inertia('Tasks/Edit', [
+            'projects' => UserResource::collection($projects),
+            'users' => UserResource::collection($users),
+            'task' => new TaskResource($task),
+        ]);
     }
 
     /**
@@ -73,7 +105,21 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        //
+        $data = $request->validated();
+        $image = $data['image'] ?? null;
+        $data['updated_by'] = Auth::id();
+        
+        if ($image) {
+            if ($task->image_path) {
+                Storage::disk('public')->delete($task->image_path);
+            }
+            $data['image_path'] = $image->store('task/' . Str::random(), 'public');
+        }
+        
+        $task->update($data);
+
+        return to_route('tasks.index')
+            ->with('success', 'Task updated successfully.');
     }
 
     /**
@@ -81,6 +127,20 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $name = $task->name;
+
+        if ($task->image_path) {
+            Storage::disk('public')->delete($task->image_path);
+
+            $directory = dirname($task->image_path);
+            if (Storage::disk('public')->exists($directory) && count(Storage::disk('public')->files($directory)) === 0) {
+                Storage::disk('public')->deleteDirectory($directory);
+            }
+        }
+
+        $task->delete();
+
+        return to_route('tasks.index')
+            ->with('success', "Task \"$name\" deleted successfully.");
     }
 }
