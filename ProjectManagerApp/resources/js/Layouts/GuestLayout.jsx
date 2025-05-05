@@ -11,14 +11,16 @@ export default function GuestLayout({ children }) {
                 <div className="aurora aurora-2 aurora-blur"></div>
                 <div className="aurora aurora-3 aurora-blur"></div>
             </div>
-            
+
             <div className="relative z-10">
-                <Link href="/">
+
+            </div>
+            
+            <div className="mt-6 w-full overflow-hidden bg-white bg-opacity-70 backdrop-blur-sm px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800 dark:bg-opacity-70 relative z-10">
+                <div className="flex items-center justify-center"><Link href="/">
                     <ApplicationLogo variant="horizontal" className="h-72 w-72 fill-current text-gray-500" />
                 </Link>
-            </div>
-
-            <div className="mt-6 w-full overflow-hidden bg-white bg-opacity-70 backdrop-blur-sm px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800 dark:bg-opacity-70 relative z-10">
+                </div>
                 {children}
             </div>
 
