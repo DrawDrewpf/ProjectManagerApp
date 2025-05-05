@@ -43,10 +43,10 @@ export default function TasksTable({ tasks = {},
                                 sortDirection={debouncedQueryParams.sort_direction}
                                 onSortChange={sortChanged}
                             />
-                            {!hideTaskColumn && (
+                            {!hideProjectColumn && (
                                 <TableHeading
-                                    name="task.name"
-                                    label="project Name"
+                                    name="project.name"
+                                    label="Project Name"
                                     sortField={debouncedQueryParams.sort_field}
                                     sortDirection={debouncedQueryParams.sort_direction}
                                     onSortChange={sortChanged}
@@ -92,14 +92,14 @@ export default function TasksTable({ tasks = {},
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                         <tr className="whitespace-nowrap">
                             <th className="px-3 py-4"></th>
-                            {!hideTaskColumn && <th className="px-3 py-4"></th>}
+                            {!hideProjectColumn && <th className="px-3 py-4"></th>}
                             <th className="px-3 py-4"></th>
                             <th className="px-3 py-4">
                                 {/* Input for task name */}
                                 <TextInput
                                     className="w-full"
                                     defaultValue={queryParams.name}
-                                    placeholder="task Name"
+                                    placeholder="Task Name"
                                     onChange={e => debouncedSearchfieldsChanged('name', e.target.value)}
                                 />
                             </th>
@@ -146,7 +146,7 @@ export default function TasksTable({ tasks = {},
                             ))
                         ) : (
                             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td colSpan={hideTaskColumn ? "7" : "8"} className="px-3 py-4 text-center">No tasks available for this task.</td>
+                                <td colSpan={hideProjectColumn ? "7" : "8"} className="px-3 py-4 text-center">No tasks available.</td>
                             </tr>
                         )}
                     </tbody>

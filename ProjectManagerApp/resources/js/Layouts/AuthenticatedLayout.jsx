@@ -24,7 +24,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                
+
                                 <NavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
@@ -48,6 +48,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                     active={route().current('users.index')}
                                 >
                                     Users
+                                </NavLink>
+                                <NavLink
+                                    href={route('tasks.myTasks')}
+                                    active={route().current('tasks.myTasks')}
+                                >
+                                    My Tasks
                                 </NavLink>
                             </div>
                         </div>
@@ -152,6 +158,30 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('dashboard')}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('projects.index')}
+                            active={route().current('projects.index')}
+                        >
+                            Projects
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('tasks.index')}
+                            active={route().current('tasks.index')}
+                        >
+                            All Tasks
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('users.index')}
+                            active={route().current('users.index')}
+                        >
+                            Users
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('tasks.myTasks')}
+                            active={route().current('tasks.myTasks')}
+                        >
+                            My Tasks
                         </ResponsiveNavLink>
                     </div>
 

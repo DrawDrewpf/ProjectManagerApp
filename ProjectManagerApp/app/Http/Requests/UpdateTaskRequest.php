@@ -24,7 +24,7 @@ class UpdateTaskRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:pending,in_progress,completed',
+            'status' => 'required|in:pending,in progress,completed',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'due_date' => 'nullable|date',
             'priority' => 'required|in:low,medium,high,extreme',

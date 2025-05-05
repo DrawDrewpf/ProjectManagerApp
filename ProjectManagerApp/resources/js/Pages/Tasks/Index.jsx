@@ -8,7 +8,7 @@ import TasksTable from "@/Pages/Tasks/TasksTable";
 
 
 
-export default function Index({ auth, tasks, queryParams = null }) {
+export default function Index({ auth, tasks, queryParams = null, isMyTasks = false }) {
 
     queryParams = queryParams || {};
 
@@ -40,8 +40,10 @@ export default function Index({ auth, tasks, queryParams = null }) {
 
     // Call the router to get the tasks
     useEffect(() => {
-        router.get(route('tasks.index', debouncedQueryParams), {}, { preserveState: true });
-    }, [debouncedQueryParams]);
+        // Determinar la ruta correcta dependiendo de si estamos en My Tasks o All Tasks
+        const routeName = isMyTasks ? 'tasks.myTasks' : 'tasks.index';
+        router.get(route(routeName, debouncedQueryParams), {}, { preserveState: true });
+    }, [debouncedQueryParams, isMyTasks]);
 
     // sortChanged function
     // This function will be called when the sort fields change
@@ -62,7 +64,7 @@ export default function Index({ auth, tasks, queryParams = null }) {
             header={
                 <div className="flex justify-between">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                        Task
+                        {isMyTasks ? 'My Tasks' : 'All Tasks'}
                     </h2>
 
                     <Link className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded" href={route('tasks.create')}>
@@ -71,7 +73,7 @@ export default function Index({ auth, tasks, queryParams = null }) {
                 </div>
             } >
 
-            <Head title="Tasks" />
+            <Head title={isMyTasks ? 'My Tasks' : 'Tasks'} />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
