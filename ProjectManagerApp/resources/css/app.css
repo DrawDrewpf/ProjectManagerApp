@@ -1,3 +1,126 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Aurora Effect Styles - Common Properties */
+.aurora-container {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.aurora-bg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.aurora-blur {
+  filter: blur(50px);
+  opacity: 0.5;
+}
+
+/* Light Mode Aurora (default) */
+.aurora {
+  position: absolute;
+  background-image: linear-gradient(
+    to right,
+    #93c5fd 0%,
+    #a5b4fc 20%,
+    #c7d2fe 40%,
+    #ddd6fe 60%,
+    #bae6fd 80%,
+    #93c5fd 100%
+  );
+  background-size: 200% 200%;
+  animation: aurora-animation 15s ease infinite;
+  width: 150%;
+  height: 150%;
+  left: -25%;
+  top: -25%;
+  transform: rotate(-10deg);
+}
+
+.aurora-2 {
+  background-image: linear-gradient(
+    to right,
+    #bae6fd 0%,
+    #c7d2fe 20%,
+    #ddd6fe 40%,
+    #e0f2fe 60%,
+    #a5b4fc 80%,
+    #bae6fd 100%
+  );
+  animation-delay: -5s;
+  opacity: 0.7;
+}
+
+.aurora-3 {
+  background-image: linear-gradient(
+    to right,
+    #c7d2fe 0%,
+    #ddd6fe 20%,
+    #e0f2fe 40%,
+    #93c5fd 60%,
+    #a5b4fc 80%,
+    #c7d2fe 100%
+  );
+  animation-delay: -10s;
+  opacity: 0.6;
+}
+
+/* Dark Mode Aurora */
+.dark .aurora {
+  background-image: linear-gradient(
+    to right,
+    #1a365d 0%,
+    #2c5282 20%,
+    #2d3748 40%,
+    #44337a 60%,
+    #1e3a8a 80%,
+    #1a365d 100%
+  );
+}
+
+.dark .aurora-2 {
+  background-image: linear-gradient(
+    to right,
+    #1e293b 0%,
+    #312e81 20%,
+    #4c1d95 40%,
+    #2d3748 60%,
+    #1e3a8a 80%,
+    #1e293b 100%
+  );
+}
+
+.dark .aurora-3 {
+  background-image: linear-gradient(
+    to right,
+    #312e81 0%,
+    #3730a3 20%,
+    #1e3a8a 40%,
+    #4c1d95 60%,
+    #1e40af 80%,
+    #312e81 100%
+  );
+}
+
+@keyframes aurora-animation {
+  0% {
+    background-position: 0% 50%;
+    transform: rotate(-10deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    transform: rotate(10deg);
+  }
+  100% {
+    background-position: 0% 50%;
+    transform: rotate(-10deg);
+  }
+}
