@@ -1,21 +1,23 @@
+import { Link, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+
+import { SunIcon, MoonIcon,ArrowRightEndOnRectangleIcon,UserIcon } from '@heroicons/react/24/outline';
+
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-        
     // Add theme state
     const [theme, setTheme] = useState(() => {
         if (typeof window !== 'undefined') {
             const savedTheme = localStorage.getItem('theme');
-            
             if (savedTheme) {
                 return savedTheme;
             } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -28,13 +30,11 @@ export default function AuthenticatedLayout({ header, children }) {
     // Load theme from localStorage on initial render
     useEffect(() => {
         const root = window.document.documentElement;
-        
         if (theme === 'dark') {
             root.classList.add('dark');
         } else {
             root.classList.remove('dark');
         }
-        
         // Save the theme to localStorage
         localStorage.setItem('theme', theme);
         
@@ -55,7 +55,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <ApplicationLogo variant="horizontal" className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                                    <ApplicationLogo variant="mono" className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                                 </Link>
                             </div>
 
@@ -125,14 +125,37 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <Dropdown.Link
                                             href={route('profile.edit')}
                                         >
+                                         <div className="flex items-center">
+                                        <UserIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
                                             Profile
+                                        </div>
+                                        </Dropdown.Link>
+                                        <Dropdown.Link as="button"
+                                onClick={() => toggleTheme(theme === 'light' ? 'dark' : 'light')}
+                            >
+                                <div key={theme} className="flex items-center"> 
+                                    {theme === 'light' ? (
+                                        <>
+                                            <MoonIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
+                                            <span>Dark Mode</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <SunIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
+                                            <span>Light Mode</span>
+                                        </>
+                                    )}
+                                </div>
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route('logout')}
                                             method="post"
                                             as="button"
                                         >
+                                        <div className="flex items-center">
+                                        <ArrowRightEndOnRectangleIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
                                             Log Out
+                                        </div>
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -239,6 +262,9 @@ export default function AuthenticatedLayout({ header, children }) {
                             >
                                 Log Out
                             </ResponsiveNavLink>
+
+                           
+                                        
                         </div>
                     </div>
                 </div>

@@ -42,7 +42,7 @@ export default function Dashboard({ auth, totalPendingTasks, myPendingTasks, tot
                 {/* My Active Tasks */}
                 <div className="mt-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow">
-                        <h3 className='text-white text-3xl font-semibold mb-4'>My Active Tasks</h3>
+                        <h3 className='text-black dark:text-white text-3xl font-semibold mb-4'>My Active Tasks</h3>
                         <div className="overflow-auto">
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-gray-400 border-b-2 border-gray-500">
