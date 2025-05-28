@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\HasCode;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
     /** @use HasFactory<\Database\Factories\TaskFactory> */
-    use HasFactory;
+    use HasFactory, HasCode;
 
     protected $fillable = [
         'name',
+        'code',
         'description',
         'image_path',
         'status',

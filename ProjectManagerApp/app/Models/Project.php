@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\HasCode;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
     /** @use HasFactory<\Database\Factories\ProjectFactory> */
-    use HasFactory;
+    use HasFactory, HasCode;
 
     protected $fillable = [
         'name',
+        'code',
         'image_path',
         'description',
         'status',

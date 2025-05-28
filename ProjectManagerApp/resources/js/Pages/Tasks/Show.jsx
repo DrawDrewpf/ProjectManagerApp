@@ -72,8 +72,8 @@ export default function Show({ auth, task, tasks, queryParams = null }) {
 
     // Call the router to get the tasks
     useEffect(() => {
-        router.get(route('tasks.show', task.id), debouncedQueryParams, { preserveState: true });
-    }, [debouncedQueryParams, task.id]);
+        router.get(route('tasks.show', task.code), debouncedQueryParams, { preserveState: true });
+    }, [debouncedQueryParams, task.code]);
 
     return (
         <AuthenticatedLayout
@@ -96,7 +96,7 @@ export default function Show({ auth, task, tasks, queryParams = null }) {
                             </div>
                             <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
                                 <h3 className="text-xl font-bold">Task Details</h3>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">ID: {task?.id || 'N/A'}</span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400">Code: {task?.code || 'N/A'}</span>
                             </div>
 
                             {/* Task details */}

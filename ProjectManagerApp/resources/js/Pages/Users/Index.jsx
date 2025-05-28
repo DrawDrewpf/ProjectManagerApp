@@ -10,10 +10,10 @@ export default function Index({ auth, users, queryParams = null }) {
 
     const columns = [
         { 
-            key: 'id', 
-            label: 'ID', 
+            key: 'code', 
+            label: 'Code', 
             sortable: true,
-            render: (item) => <TableCell type="number" value={item.id} asCell={false} />
+            render: (item) => <TableCell type="text" value={item.code} asCell={false} />
         },
         { 
             key: 'name', 
@@ -38,7 +38,7 @@ export default function Index({ auth, users, queryParams = null }) {
     const rowActions = (userItem) => (
         <div className="flex items-center justify-center space-x-2">
             <ActionButton
-                href={route('users.edit', userItem.id)}
+                href={route('users.edit', userItem.code)}
                 variant="primary"
                 size="xs"
             >
@@ -50,7 +50,7 @@ export default function Index({ auth, users, queryParams = null }) {
             <ActionButton
                 onClick={() => {
                     if (confirm('Are you sure you want to delete this user?')) {
-                        router.delete(route('users.destroy', userItem.id), {
+                        router.delete(route('users.destroy', userItem.code), {
                             preserveScroll: true,
                         });
                     }

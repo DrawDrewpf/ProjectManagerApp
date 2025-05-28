@@ -16,10 +16,10 @@ export default function Index({ auth, tasks, queryParams = null, isMyTasks = fal
 
     const columns = [
         { 
-            key: 'id', 
-            label: 'ID', 
+            key: 'code', 
+            label: 'Code', 
             sortable: true,
-            render: (item) => <TableCell type="number" value={item.id} asCell={false} />
+            render: (item) => <TableCell type="text" value={item.code} asCell={false} />
         },
         {
             key: 'image',
@@ -76,7 +76,7 @@ export default function Index({ auth, tasks, queryParams = null, isMyTasks = fal
     const rowActions = (taskItem) => (
         <div className="flex items-center justify-center space-x-2">
             <ActionButton
-                href={route('tasks.edit', taskItem.id)}
+                href={route('tasks.edit', taskItem.code)}
                 variant="primary"
                 size="xs"
             >
@@ -86,7 +86,7 @@ export default function Index({ auth, tasks, queryParams = null, isMyTasks = fal
                 Edit
             </ActionButton>
             <ActionButton
-                href={route('tasks.show', taskItem.id)}
+                href={route('tasks.show', taskItem.code)}
                 variant="success"
                 size="xs"
             >
@@ -99,7 +99,7 @@ export default function Index({ auth, tasks, queryParams = null, isMyTasks = fal
             <ActionButton
                 onClick={() => {
                     if (confirm('Are you sure you want to delete this task?')) {
-                        router.delete(route('tasks.destroy', taskItem.id), {
+                        router.delete(route('tasks.destroy', taskItem.code), {
                             preserveScroll: true,
                         });
                     }

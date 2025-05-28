@@ -68,12 +68,10 @@ export default function Show({ auth, user, tasks, queryParams = null }) {
                 sort_direction: sortDirection
             };
         });
-    };
-
-    // Call the router to get the tasks
+    };    // Call the router to get the tasks
     useEffect(() => {
-        router.get(route('users.show', user.id), debouncedQueryParams, { preserveState: true });
-    }, [debouncedQueryParams, user.id]);
+        router.get(route('users.show', user.code), debouncedQueryParams, { preserveState: true });
+    }, [debouncedQueryParams, user.code]);
 
     return (
         <AuthenticatedLayout
@@ -93,10 +91,9 @@ export default function Show({ auth, user, tasks, queryParams = null }) {
                                     alt={userName}
                                     className="w-full h-48 object-cover rounded-lg shadow-md"
                                 />
-                            </div>
-                            <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
+                            </div>                            <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
                                 <h3 className="text-xl font-bold">User Details</h3>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">ID: {user?.id || 'N/A'}</span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400">Code: {user?.code || 'N/A'}</span>
                             </div>
 
                             {/* User details */}

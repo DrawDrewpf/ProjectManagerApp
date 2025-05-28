@@ -17,6 +17,7 @@ class UserResource extends JsonResource
     {
         return [
             "id" => $this->id,
+            "code" => $this->code,
             "name" => $this->name,
             "email" => $this->email,
             "created_at" => Carbon::parse($this->created_at)->format('d/m/Y'),

@@ -13,10 +13,10 @@ export default function Index({ auth, projects, queryParams = null }) {
 
     const columns = [
         { 
-            key: 'id', 
-            label: 'ID', 
+            key: 'code', 
+            label: 'Code', 
             sortable: true,
-            render: (item) => <TableCell type="number" value={item.id} asCell={false} />
+            render: (item) => <TableCell type="text" value={item.code} asCell={false} />
         },
         {
             key: 'image',
@@ -57,7 +57,7 @@ export default function Index({ auth, projects, queryParams = null }) {
     const rowActions = (projectItem) => (
         <div className="flex items-center justify-center space-x-2">
             <ActionButton
-                href={route('projects.edit', projectItem.id)}
+                href={route('projects.edit', projectItem.code)}
                 variant="primary"
                 size="xs"
             >
@@ -67,7 +67,7 @@ export default function Index({ auth, projects, queryParams = null }) {
                 Edit
             </ActionButton>
             <ActionButton
-                href={route('projects.show', projectItem.id)}
+                href={route('projects.show', projectItem.code)}
                 variant="success"
                 size="xs"
             >
@@ -80,7 +80,7 @@ export default function Index({ auth, projects, queryParams = null }) {
             <ActionButton
                 onClick={() => {
                     if (confirm('Are you sure you want to delete this project?')) {
-                        router.delete(route('projects.destroy', projectItem.id), {
+                        router.delete(route('projects.destroy', projectItem.code), {
                             preserveScroll: true,
                         });
                     }

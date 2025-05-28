@@ -1,5 +1,4 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState, useCallback, useEffect } from 'react';
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
@@ -31,55 +30,8 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
     const statusText = project?.status ? PROJECT_STATUS_TEXT_MAP[project.status] : 'Unknown';
     const statusClass = project?.status ? PROJECT_STATUS_CLASS_MAP[project.status] : 'bg-gray-400';
 
-    // Add state and handlers for TasksTable functionality
-    queryParams = queryParams || {};
-    const [debouncedQueryParams, setDebouncedQueryParams] = useState(queryParams);
-
-    // Function debounce
-    // This function will be used to debounce the searchfieldsChanged function
-    const debounce = (func, delay) => {
-        let timeoutId;
-        return (...args) => {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-            timeoutId = setTimeout(() => {
-                func(...args);
-            }, delay);
-        };
-    };
-    // Function searchfieldsChanged 
-    // This function will be called when the search fields change
-    const searchfieldsChanged = (name, value) => {
-        setDebouncedQueryParams(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-    // Function debouncedSearchfieldsChanged
-    // This function will be used to debounce the searchfieldsChanged function
-    const debouncedSearchfieldsChanged = useCallback(debounce(searchfieldsChanged, 300), []);
-
-    // Function sortChanged
-    // This function will be called when the sort field changes
-    const sortChanged = (name) => {
-        setDebouncedQueryParams(prevState => {
-            const sortDirection = prevState.sort_field === name && prevState.sort_direction === 'asc' ? 'desc' : 'asc';
-            return {
-                ...prevState,
-                sort_field: name,
-                sort_direction: sortDirection
-            };
-        });
-    };
-
-    // Call the router to get the tasks
-    useEffect(() => {
-        router.get(route('projects.show', project.id), debouncedQueryParams, { preserveState: true });
-    }, [debouncedQueryParams, project.id]);
-
     const taskColumns = [
-        { key: 'id', label: 'ID', sortable: true },
+        { key: 'code', label: 'Code', sortable: true },
         { key: 'name', label: 'Name', sortable: true },
         {
             key: 'status',
@@ -128,13 +80,13 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
     const taskRowActions = (taskItem) => (
         <div className="space-x-2 whitespace-nowrap">
             <Link
-                href={route('tasks.edit', taskItem.id)}
+                href={route('tasks.edit', taskItem.code)}
                 className="text-blue-600 hover:text-blue-900"
             >
                 Edit
             </Link>
             <Link
-                href={route('tasks.show', taskItem.id)}
+                href={route('tasks.show', taskItem.code)}
                 className="text-green-600 hover:text-green-900"
             >
                 View
@@ -142,7 +94,7 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
             <button
                 onClick={() => {
                     if (confirm('Are you sure you want to delete this task?')) {
-                        router.delete(route('tasks.destroy', taskItem.id), {
+                        router.delete(route('tasks.destroy', taskItem.code), {
                             preserveScroll: true,
                         });
                     }
@@ -175,7 +127,7 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
                             </div>
                             <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
                                 <h3 className="text-xl font-bold">Project Details</h3>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">ID: {project?.id || 'N/A'}</span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400">Code: {project?.code || 'N/A'}</span>
                             </div>
 
                             {/* Project details */}
@@ -233,14 +185,15 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
                             <h3 className="text-xl font-bold mb-4">Project Tasks</h3>
                             {/* DataTable for tasks */}
                             <DataTable
-                                fetchUrl={route('tasks.index')}
+                                fetchUrl={route('projects.show', project.code)}
                                 columns={taskColumns}
                                 initialQueryParams={{ 
                                     ...queryParams,
-                                    project_id: project.id 
+                                    project_code: project.code 
                                 }}
                                 rowActions={taskRowActions}
                                 globalSearchPlaceholder="Search tasks in this project..."
+                                initialData={tasks}
                             />
                         </div>
                     </div>

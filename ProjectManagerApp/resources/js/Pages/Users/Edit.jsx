@@ -13,11 +13,9 @@ export default function Edit({ auth, user }) {
         email: user.email || '',
         password: '',
         password_confirmation: '',
-    });
-
-    const onSubmit = (e) => {
+    });    const onSubmit = (e) => {
         e.preventDefault();
-        put(route('users.update', user.id), {
+        put(route('users.update', user.code), {
             onSuccess: () => {
                 reset('password', 'password_confirmation');
                 console.log('User updated successfully');

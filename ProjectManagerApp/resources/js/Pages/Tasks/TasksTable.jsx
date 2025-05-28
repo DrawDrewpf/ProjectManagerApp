@@ -26,7 +26,7 @@ export default function TasksTable({ tasks = {},
             {
                 return;
             }
-            router.delete(route('tasks.destroy', task.id));
+            router.delete(route('tasks.destroy', task.code));
         }
 
     return (
@@ -35,10 +35,10 @@ export default function TasksTable({ tasks = {},
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                         <tr className="whitespace-nowrap">
-                            {/* Table Heading - ID */}
+                            {/* Table Heading - Code */}
                             <TableHeading
-                                name="id"
-                                label="ID"
+                                name="code"
+                                label="Code"
                                 sortField={debouncedQueryParams.sort_field}
                                 sortDirection={debouncedQueryParams.sort_direction}
                                 onSortChange={sortChanged}
@@ -125,11 +125,11 @@ export default function TasksTable({ tasks = {},
                         {/* Map through the task data */}
                         {taskData.length > 0 ? (
                             taskData.map(task => (
-                                <tr key={task.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                    <td className="px-3 py-4">{task.id}</td>
+                                <tr key={task.code} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td className="px-3 py-4">{task.code}</td>
                                     {!hideProjectColumn && <td className="px-3 py-4">{task.project.name}</td>}
-                                    <td className="px-3 py-4"><img src={task.image_path} alt={task.id} className="w-12 h-12" /></td>
-                                    <td className="px-3 py-4"><Link href={route('tasks.show', task.id)} className="hover:underline text-white text-nowrap">{task.name}</Link></td>
+                                    <td className="px-3 py-4"><img src={task.image_path} alt={task.code} className="w-12 h-12" /></td>
+                                    <td className="px-3 py-4"><Link href={route('tasks.show', task.code)} className="hover:underline text-white text-nowrap">{task.name}</Link></td>
                                     <td className="px-2 py-4">
                                         <span className={"px-3 py-1.5 rounded text-white " + TASK_STATUS_CLASS_MAP[task.status]}>
                                             {TASK_STATUS_TEXT_MAP[task.status]}
@@ -139,7 +139,7 @@ export default function TasksTable({ tasks = {},
                                     <td className="px-3 py-4">{task.due_date}</td>
                                     <td className="px-3 py-4">{task.createdBy?.name || 'Not specified'}</td>
                                     <td className="px-3 py-4 flex">
-                                        <Link href={route('tasks.edit', task.id)} className="font-medium text-white bg-blue-500 hover:bg-blue-600 mx-2 p-2 rounded-md">Edit</Link>
+                                        <Link href={route('tasks.edit', task.code)} className="font-medium text-white bg-blue-500 hover:bg-blue-600 mx-2 p-2 rounded-md">Edit</Link>
                                         <Button onClick={e => deleteTask(task)} className="font-medium text-white bg-red-500 hover:bg-red-600 mx-2 p-2 rounded-md">Delete</Button>
                                     </td>
                                 </tr>

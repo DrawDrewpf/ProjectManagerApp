@@ -24,7 +24,7 @@ export default function Edit({ auth, task, projects, users }) {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        post(route('tasks.update', task.id), {
+        post(route('tasks.update', task.code), {
             forceFormData: true,
             onSuccess: () => reset(),
             onError: (errors) => console.log('Errors:', errors),

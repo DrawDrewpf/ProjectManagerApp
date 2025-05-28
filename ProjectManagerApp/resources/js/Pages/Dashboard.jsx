@@ -1,5 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react'; 
-
+import { Head, Link, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 import DataTable from '@/Components/DataTables/DataTable';
@@ -20,10 +19,10 @@ export default function Dashboard({
 }) {
     const activeTaskColumns = [
         { 
-            key: 'id', 
-            label: 'ID', 
+            key: 'code', 
+            label: 'Code', 
             sortable: true,
-            render: (item) => <TableCell type="number" value={item.id} asCell={false} />
+            render: (item) => <TableCell type="text" value={item.code} asCell={false} />
         },
         {
             key: 'project.name',
@@ -58,19 +57,18 @@ export default function Dashboard({
     const activeTaskRowActions = (taskItem) => (
         <div className="flex items-center justify-center space-x-2">
             <ActionButton
-                href={route('tasks.show', taskItem.id)}
+                href={route('tasks.show', taskItem.code)}
                 variant="success"
                 size="xs"
             >
                 <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 616 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
                 View
             </ActionButton>
         </div>
     );
-
 
     return (
         <AuthenticatedLayout
@@ -96,7 +94,6 @@ export default function Dashboard({
                     <div className="p-6 text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
                         <h3 className='text-blue-500 text-2xl font-semibold'>Progress Tasks</h3>
                         <p className='text-lg mt-4 font-bold'>
-                           
                             <span className='mr-2'>{myProgressTasks}</span>/<span className='ml-2'>{totalProgressTasks}</span> 
                         </p>
                     </div>
@@ -111,7 +108,7 @@ export default function Dashboard({
 
                 {/* My Active Tasks */}
                 <div className="px-4 sm:px-6 lg:px-8 flex-grow flex flex-col">
-                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow flex-grow flex flex-col">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow flex-grow flex-col">
                         <h3 className='text-gray-900 dark:text-white text-2xl font-semibold mb-4 flex-shrink-0'>My Active Tasks</h3>
                         <div className="flex-grow">
                             <DataTable
