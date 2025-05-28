@@ -66,11 +66,17 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $password['password'] = bcrypt($data['password']);
-        User::create ($data); 
+        $user = User::create($data); 
+
+        // Add additional informative message
+        if ($user->email_verified_at === null) {
+            return to_route('users.index')
+                ->with('success', 'User created successfully.')
+                ->with('info', 'The user will need to verify their email address.');
+        }
 
         return to_route('users.index') 
-        -> with('success', 'User created successfully.');
-
+            ->with('success', 'User created successfully.');
     }
 
     /**
@@ -137,9 +143,20 @@ class UserController extends Controller
     {
         $name = $user->name;
         
+        // Example validation to show different toast types
+        if ($user->tasks()->count() > 0) {
+            return to_route('users.index')
+                ->with('warning', "User \"$name\" has active tasks. Consider reassigning them before deletion.");
+        }
+        
+        if ($user->id === auth()->id()) {
+            return to_route('users.index')
+                ->with('error', "You cannot delete your own account.");
+        }
+        
         $user->delete();
 
         return to_route('users.index')
-        -> with('success', "User \"$name\" deleted successfully.");
+            ->with('success', "User \"$name\" deleted successfully.");
     }
 }

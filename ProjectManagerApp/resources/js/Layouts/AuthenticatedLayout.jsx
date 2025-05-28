@@ -5,7 +5,9 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import FlashMessages from '@/Components/FlashMessages';
 import { useTheme } from '@/Contexts/ThemeContext';
+import { ToastProvider, useToast } from '@/Contexts/ToastContext';
 
 import { SunIcon, MoonIcon,ArrowRightEndOnRectangleIcon,UserIcon } from '@heroicons/react/24/outline';
 
@@ -29,7 +31,24 @@ export default function AuthenticatedLayout({ header, children }) {
     }, []);
 
     return (
+        <ToastProvider>
+            <ToastContent 
+                header={header} 
+                children={children} 
+                user={user}
+                toggle={toggle}
+                currentTheme={currentTheme}
+                showingNavigationDropdown={showingNavigationDropdown}
+                setShowingNavigationDropdown={setShowingNavigationDropdown}
+            />
+        </ToastProvider>
+    );
+}
+
+function ToastContent({ header, children, user, toggle, currentTheme, showingNavigationDropdown, setShowingNavigationDropdown }) {
+    return (
         <div className="min-h-screen flex flex-col"> 
+            <FlashMessages />
             <nav className="relative border-b border-gray-100 dark:border-gray-700 bg-transparent">
                 {/* Aurora Background Effect  */}
                 <div className="aurora-bg absolute inset-0 "> 
@@ -271,6 +290,8 @@ export default function AuthenticatedLayout({ header, children }) {
                 </main>
             </div>
             
+            {/* Flash Messages Component */}
+            <FlashMessages />
         </div>
     );
 }

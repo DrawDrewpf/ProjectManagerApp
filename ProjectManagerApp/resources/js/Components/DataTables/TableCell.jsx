@@ -58,9 +58,6 @@ export default function TableCell({
                 ) : 'N/A';
             
             case 'image':
-                // Debug logging
-                console.log('TableCell image debug:', { value, type: typeof value, isNull: value === null, isUndefined: value === undefined });
-                
                 return value ? (
                     <div className="flex items-center justify-center">
                         <img 
@@ -68,7 +65,6 @@ export default function TableCell({
                             alt="Table image" 
                             className="w-10 h-10 rounded-full object-cover mx-auto"
                             onError={(e) => {
-                                console.log('Image load error for:', value);
                                 e.target.style.display = 'none';
                                 const fallback = e.target.nextElementSibling;
                                 if (fallback) {
@@ -76,7 +72,6 @@ export default function TableCell({
                                 }
                             }}
                             onLoad={() => {
-                                console.log('Image loaded successfully:', value);
                             }}
                         />
                         <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto" style={{display: 'none'}}>
