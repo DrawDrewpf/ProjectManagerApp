@@ -5,46 +5,28 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { useTheme } from '@/Contexts/ThemeContext';
 
 import { SunIcon, MoonIcon,ArrowRightEndOnRectangleIcon,UserIcon } from '@heroicons/react/24/outline';
 
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
+    const { toggle, getCurrentTheme } = useTheme();
+    const [currentTheme, setCurrentTheme] = useState(() => getCurrentTheme());
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-    const [theme, setTheme] = useState(() => {
-        if (typeof window !== 'undefined') {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                return savedTheme;
-            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                return 'dark';
-            }
-        }
-        return 'light'; 
-    });
 
-    // Load theme from localStorage on initial render
+    // Only listen to theme changes to update local state
     useEffect(() => {
-        const root = window.document.documentElement;
-        if (theme === 'dark') {
-            root.classList.add('dark');
-        } else {
-            root.classList.remove('dark');
-        }
-        // Save the theme to localStorage
-        localStorage.setItem('theme', theme);
-        
-        // Dispatch a custom event to notify other components
-        window.dispatchEvent(new CustomEvent('themeChanged', { detail: theme }));
-    }, [theme]);
+        const handleThemeChange = (event) => {
+            setCurrentTheme(event.detail.theme);
+        };
 
-    // Toggle theme 
-    const toggleTheme = (newTheme) => {
-        setTheme(newTheme);
-    };
+        window.addEventListener('themeChanged', handleThemeChange);
+        return () => window.removeEventListener('themeChanged', handleThemeChange);
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col"> 
@@ -136,10 +118,10 @@ export default function AuthenticatedLayout({ header, children }) {
                                         </div>
                                         </Dropdown.Link>
                                         <Dropdown.Link as="button"
-                                onClick={() => toggleTheme(theme === 'light' ? 'dark' : 'light')}
+                                onClick={() => toggle()}
                             >
-                                <div key={theme} className="flex items-center"> 
-                                    {theme === 'light' ? (
+                                <div key={currentTheme} className="flex items-center"> 
+                                    {currentTheme === 'light' ? (
                                         <>
                                             <MoonIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
                                             <span>Dark Mode</span>
