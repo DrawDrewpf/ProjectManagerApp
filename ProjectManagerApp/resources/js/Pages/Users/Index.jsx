@@ -1,194 +1,103 @@
-import Pagination from "@/Components/DataTables/Pagination";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, router } from "@inertiajs/react";
-import TextInput from "@/Components/TextInput";
-import TableHeading from "@/Components/DataTables/TableHeading";
-import { useState, useEffect, useCallback } from 'react';
-import { Button } from "@headlessui/react";
+import { Head, Link, router } from '@inertiajs/react';
 
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-export default function Index({ auth, users, queryParams = null }) {
+import DataTable from '@/Components/DataTables/DataTable'; 
+import ActionButton from '@/Components/DataTables/ActionButton';
+import TableCell from '@/Components/DataTables/TableCell';
 
-    queryParams = queryParams || {};
+export default function Index({ auth, users, queryParams = null }) { 
 
-    const [debouncedQueryParams, setDebouncedQueryParams] = useState(queryParams);
-
-    // Debounce function
-    // This function will be used to debounce the searchfieldsChanged function
-    const debounce = (func, delay) => {
-        let timeoutId;
-        return (...args) => {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-            timeoutId = setTimeout(() => {
-                func(...args);
-            }, delay);
-        };
-    };
-
-    // searchfieldsChanged function
-    // This function will be called when the search fields change
-    const searchfieldsChanged = (name, value) => {
-        setDebouncedQueryParams(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
-    // debouncedSearchfieldsChanged function
-    // This function will be used to debounce the searchfieldsChanged function
-    const debouncedSearchfieldsChanged = useCallback(debounce(searchfieldsChanged, 300), []);
-
-    // Call the router to get the tasks
-    useEffect(() => {
-        router.get(route('users.index', debouncedQueryParams), {}, { preserveState: true });
-    }, [debouncedQueryParams]);
-
-    const sortChanged = (name) => {
-        setDebouncedQueryParams(prevState => {
-            const sortDirection = prevState.sort_field === name && prevState.sort_direction === 'asc' ? 'desc' : 'asc';
-            return {
-                ...prevState,
-                sort_field: name,
-                sort_direction: sortDirection
-            };
-        });
-    };
-
-    // Function to delete a user
-    // This function will be called when the delete button is clicked
-    const deleteUser = (user) => {
-        if (!window.confirm('Are you sure you want to delete this user?')) 
+    const columns = [
+        { 
+            key: 'id', 
+            label: 'ID', 
+            sortable: true,
+            render: (item) => <TableCell type="number" value={item.id} asCell={false} />
+        },
+        { 
+            key: 'name', 
+            label: 'Name', 
+            sortable: true,
+            render: (item) => <TableCell type="text" value={item.name} asCell={false} />
+        },
+        { 
+            key: 'email', 
+            label: 'Email', 
+            sortable: true,
+            render: (item) => <TableCell type="email" value={item.email} asCell={false} />
+        },
         {
-            return;
-        }
-        router.delete(route('users.destroy', user.id));
-    }
+            key: 'created_at',
+            label: 'Created At',
+            sortable: true,
+            render: (item) => <TableCell type="date" value={item.created_at} asCell={false} />
+        },
+    ];
+
+    const rowActions = (userItem) => (
+        <div className="flex items-center justify-center space-x-2">
+            <ActionButton
+                href={route('users.edit', userItem.id)}
+                variant="primary"
+                size="xs"
+            >
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Edit
+            </ActionButton>
+            <ActionButton
+                onClick={() => {
+                    if (confirm('Are you sure you want to delete this user?')) {
+                        router.delete(route('users.destroy', userItem.id), {
+                            preserveScroll: true,
+                        });
+                    }
+                }}
+                variant="danger"
+                size="xs"
+            >
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Delete
+            </ActionButton>
+        </div>
+    );
 
     return (
         <AuthenticatedLayout
-            title={auth.user}
+            user={auth.user}
             header={
-                <div className="flex justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                        Users
-                    </h2>
-
-                    <Link className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded" href={route('users.create')}>
-                        Create New User
-                    </Link>
-                </div>
-            } >
-
+                <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    Users
+                </h2>
+            }
+        >
             <Head title="Users" />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-
-                            <div className="overflow-auto">
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-                                        <tr className="whitespace-nowrap">
-                                            {/* Table Heading - ID */}
-                                            <TableHeading
-                                                name="id"
-                                                label="ID"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            
-                                            {/* Table Heading - Name */}
-                                            <TableHeading
-                                                name="name"
-                                                label="Name"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            {/* Table Heading - Email */}
-                                            <TableHeading
-                                                name="email"
-                                                label="Email"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            {/* Table Heading - Created At */}
-                                            <TableHeading
-                                                name="created_at"
-                                                label="Create Date"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            {/* Table Heading - Actions */}
-                                            <TableHeading
-                                                name="actions"
-                                                label="Actions"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />        
-                                        </tr>
-                                    </thead>
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-                                        <tr className="whitespace-nowrap">
-                                            <th className="px-3 py-4"></th>
-                                            <th className="px-3 py-4">
-                                                {/* Input for user name */}
-                                                <TextInput
-                                                    className="w-full"
-                                                    defaultValue={queryParams.name}
-                                                    placeholder="User Name"
-                                                    onChange={e => debouncedSearchfieldsChanged('name', e.target.value)}
-                                                />
-                                            </th>
-                                            <th className="px-3 py-4">
-                                                {/* Input for user email */}
-                                                <TextInput
-                                                    className="w-full"
-                                                    defaultValue={queryParams.email}
-                                                    placeholder="User Email"
-                                                    onChange={e => debouncedSearchfieldsChanged('email', e.target.value)}
-                                                />
-                                            </th>
-                                            <th className="px-3 py-4"></th>
-                                            <th className="px-3 py-4"></th>
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {/* Map through the user data */}
-                                        {users.data.map(user => (
-                                            <tr key={user.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td className="px-3 py-4">{user.id}</td>
-                                                <td className="px-3 py-4">
-                                                    <Link href={route('users.show', user.id)} className="hover:underline text-white text-nowrap">
-                                                        {user.name}
-                                                    </Link>
-                                                </td>
-                                                <td className="px-2 py-4">{user.email}</td>
-                                                <td className="px-3 py-4">{user.created_at}</td>
-                                                <td className="px-3 py-4 flex">
-                                                    <Link href={route('users.edit', user.id)} className="font-medium text-white bg-blue-500 hover:bg-blue-600 mx-2 p-2 rounded-md">Edit</Link>
-                                                    <Button onClick={e => deleteUser(user)} className="font-medium text-white bg-red-500 hover:bg-red-600 mx-2 p-2 rounded-md">Delete</Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-
-                                    </tbody>
-                                </table>
+            <div className="py-4 h-full flex flex-col">
+                <div className="px-4 sm:px-6 lg:px-8 flex-grow flex flex-col">
+                    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg flex-grow flex flex-col">
+                        <div className="p-6 text-gray-900 dark:text-gray-100 flex-grow flex flex-col">
+                            <div className="flex-grow">
+                                {/* DataTable Users */}
+                                <DataTable
+                                    fetchUrl={route('users.index')}
+                                    columns={columns}
+                                    initialQueryParams={users.meta?.current_query_params || queryParams || {}}
+                                    createUrl={route('users.create')}
+                                    createButtonLabel="Add New User"
+                                    rowActions={rowActions}
+                                    globalSearchPlaceholder="Search users..."
+                                    initialData={users}
+                                />
                             </div>
-                            {/* Pagination Component */}
-                            <Pagination links={users.meta.links} />
                         </div>
                     </div>
                 </div>
             </div>
         </AuthenticatedLayout>
-    )
+    );
 }

@@ -1,212 +1,133 @@
-import Pagination from "@/Components/DataTables/Pagination";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, router } from "@inertiajs/react";
-import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from "@/constants.js";
-import TextInput from "@/Components/TextInput";
-import SelectInput from "@/Components/SelectInput";
-import TableHeading from "@/Components/DataTables/TableHeading";
-import { useState, useEffect, useCallback } from 'react';
-import { Button } from "@headlessui/react";
+import { Head, Link, router } from '@inertiajs/react';
 
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+
+import DataTable from '@/Components/DataTables/DataTable';
+import ActionButton from '@/Components/DataTables/ActionButton';
+import StatusBadge from '@/Components/DataTables/StatusBadge';
+import TableCell from '@/Components/DataTables/TableCell';
+
+import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from '@/constants';
 
 export default function Index({ auth, projects, queryParams = null }) {
 
-    queryParams = queryParams || {};
-
-    const [debouncedQueryParams, setDebouncedQueryParams] = useState(queryParams);
-
-    // Debounce function
-    // This function will be used to debounce the searchfieldsChanged function
-    const debounce = (func, delay) => {
-        let timeoutId;
-        return (...args) => {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-            timeoutId = setTimeout(() => {
-                func(...args);
-            }, delay);
-        };
-    };
-
-    // searchfieldsChanged function
-    // This function will be called when the search fields change
-    const searchfieldsChanged = (name, value) => {
-        setDebouncedQueryParams(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
-    // debouncedSearchfieldsChanged function
-    // This function will be used to debounce the searchfieldsChanged function
-    const debouncedSearchfieldsChanged = useCallback(debounce(searchfieldsChanged, 300), []);
-
-    // Call the router to get the tasks
-    useEffect(() => {
-        router.get(route('projects.index', debouncedQueryParams), {}, { preserveState: true });
-    }, [debouncedQueryParams]);
-
-    const sortChanged = (name) => {
-        setDebouncedQueryParams(prevState => {
-            const sortDirection = prevState.sort_field === name && prevState.sort_direction === 'asc' ? 'desc' : 'asc';
-            return {
-                ...prevState,
-                sort_field: name,
-                sort_direction: sortDirection
-            };
-        });
-    };
-
-    // Function to delete a project
-    // This function will be called when the delete button is clicked
-    const deleteProject = (project) => {
-        if (!window.confirm('Are you sure you want to delete this project?')) 
+    const columns = [
+        { 
+            key: 'id', 
+            label: 'ID', 
+            sortable: true,
+            render: (item) => <TableCell type="number" value={item.id} asCell={false} />
+        },
         {
-            return;
-        }
-        router.delete(route('projects.destroy', project.id));
-    }
+            key: 'image',
+            label: 'Image',
+            sortable: false,
+            render: (item) => <TableCell type="image" value={item.image_path} asCell={false} />
+        },
+        { 
+            key: 'name', 
+            label: 'Name', 
+            sortable: true,
+            render: (item) => <TableCell type="text" value={item.name} asCell={false} />
+        },
+        {
+            key: 'status',
+            label: 'Status',
+            sortable: true,
+            render: (item) => (
+                <StatusBadge status={item.status} size="sm">
+                    {PROJECT_STATUS_TEXT_MAP[item.status]}
+                </StatusBadge>
+            ),
+        },
+        {
+            key: 'created_at',
+            label: 'Created Date',
+            sortable: true,
+            render: (item) => <TableCell type="date" value={item.created_at} asCell={false} />
+        },
+        {
+            key: 'due_date',
+            label: 'Due Date',
+            sortable: true,
+            render: (item) => <TableCell type="date" value={item.due_date} asCell={false} />
+        },
+    ];
+
+    const rowActions = (projectItem) => (
+        <div className="flex items-center justify-center space-x-2">
+            <ActionButton
+                href={route('projects.edit', projectItem.id)}
+                variant="primary"
+                size="xs"
+            >
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Edit
+            </ActionButton>
+            <ActionButton
+                href={route('projects.show', projectItem.id)}
+                variant="success"
+                size="xs"
+            >
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                View
+            </ActionButton>
+            <ActionButton
+                onClick={() => {
+                    if (confirm('Are you sure you want to delete this project?')) {
+                        router.delete(route('projects.destroy', projectItem.id), {
+                            preserveScroll: true,
+                        });
+                    }
+                }}
+                variant="danger"
+                size="xs"
+            >
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Delete
+            </ActionButton>
+        </div>
+    );
 
     return (
         <AuthenticatedLayout
-            title={auth.user}
+            user={auth.user}
             header={
-                <div className="flex justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                        Projects
-                    </h2>
-
-                    <Link className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded" href={route('projects.create')}>
-                        Create New Project
-                    </Link>
-                </div>
-            } >
-
+                <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    Projects
+                </h2>
+            }
+        >
             <Head title="Projects" />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-
-                            <div className="overflow-auto">
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-                                        <tr className="whitespace-nowrap">
-                                            {/* Table Heading - ID */}
-                                            <TableHeading
-                                                name="id"
-                                                label="ID"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            <th className="px-3 py-4 text-center">Image</th>
-                                            {/* Table Heading - Name */}
-                                            <TableHeading
-                                                name="name"
-                                                label="Name"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            {/* Table Heading - Status */}
-                                            <TableHeading
-                                                name="status"
-                                                label="Status"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            {/* Table Heading - Created At */}
-                                            <TableHeading
-                                                name="created_at"
-                                                label="Create Date"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            {/* Table Heading - Due Date */}
-                                            <TableHeading
-                                                name="due_date"
-                                                label="Due Date"
-                                                sortField={debouncedQueryParams.sort_field}
-                                                sortDirection={debouncedQueryParams.sort_direction}
-                                                onSortChange={sortChanged}
-                                            />
-                                            <th className="px-3 py-4">Created By</th>
-                                            <th className="px-3 py-4 text-center">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-                                        <tr className="whitespace-nowrap">
-                                            <th className="px-3 py-4"></th>
-                                            <th className="px-3 py-4"></th>
-                                            <th className="px-3 py-4">
-                                                {/* Input for project name */}
-                                                <TextInput
-                                                    className="w-full"
-                                                    defaultValue={queryParams.name}
-                                                    placeholder="Project Name"
-                                                    onChange={e => debouncedSearchfieldsChanged('name', e.target.value)}
-                                                />
-                                            </th>
-                                            <th className="px-3 py-4">
-                                                {/* Select for project status */}
-                                                <SelectInput
-                                                    className="w-full border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                    defaultValue={queryParams.status}
-                                                    onChange={e => debouncedSearchfieldsChanged('status', e.target.value)}>
-                                                    <option value="">All Statuses</option>
-                                                    {Object.entries(PROJECT_STATUS_TEXT_MAP).map(([value, text]) => (
-                                                        <option key={value} value={value} className="py-2">
-                                                            {text}
-                                                        </option>
-                                                    ))}
-                                                </SelectInput>
-                                            </th>
-                                            <th className="px-3 py-4"></th>
-                                            <th className="px-3 py-4"></th>
-                                            <th className="px-3 py-4"></th>
-                                            <th className="px-3 py-4"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {/* Map through the project data */}
-                                        {projects.data.map(project => (
-                                            <tr key={project.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td className="px-3 py-4">{project.id}</td>
-                                                <td className="px-3 py-4"><img src={project.image_path} alt={project.id} className="w-12 h-12" /></td>
-                                                <td className="px-3 py-4">
-                                                    <Link href={route('projects.show', project.id)} className="hover:underline text-white text-nowrap">
-                                                        {project.name}
-                                                    </Link>
-                                                </td>
-                                                <td className="px-2 py-4">
-                                                    <span className={"px-3 py-1.5 rounded text-white " + PROJECT_STATUS_CLASS_MAP[project.status]}>
-                                                        {PROJECT_STATUS_TEXT_MAP[project.status]}
-                                                    </span>
-                                                </td>
-                                                <td className="px-3 py-4">{project.created_at}</td>
-                                                <td className="px-3 py-4">{project.due_date}</td>
-                                                <td className="px-3 py-4">{project.createdBy.name}</td>
-                                                <td className="px-3 py-4 flex">
-                                                    <Link href={route('projects.edit', project.id)} className="font-medium text-white bg-blue-500 hover:bg-blue-600 mx-2 p-2 rounded-md">Edit</Link>
-                                                    <Button onClick={e => deleteProject(project)} className="font-medium text-white bg-red-500 hover:bg-red-600 mx-2 p-2 rounded-md">Delete</Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-
-                                    </tbody>
-                                </table>
+            <div className="py-4 h-full flex flex-col">
+                <div className="px-4 sm:px-6 lg:px-8 flex-grow flex flex-col">
+                    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg flex-grow flex flex-col">
+                        <div className="p-6 text-gray-900 dark:text-gray-100 flex-grow flex flex-col">
+                            <div className="flex-grow">
+                                {/* DataTable Projects */}
+                                <DataTable
+                                    fetchUrl={route('projects.index')}
+                                    columns={columns}
+                                    initialQueryParams={projects.meta?.current_query_params || queryParams || {}}
+                                    createUrl={route('projects.create')}
+                                    createButtonLabel="Add New Project"
+                                    rowActions={rowActions}
+                                    globalSearchPlaceholder="Search projects..."
+                                    initialData={projects}
+                                />
                             </div>
-                            {/* Pagination Component */}
-                            <Pagination links={projects.meta.links} />
                         </div>
                     </div>
                 </div>
             </div>
         </AuthenticatedLayout>
-    )
+    );
 }

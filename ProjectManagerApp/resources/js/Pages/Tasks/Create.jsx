@@ -1,12 +1,12 @@
+import { Head, useForm, Link } from "@inertiajs/react";
+
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
+import SelectInput from "@/Components/SelectInput";
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-
-import { Head, useForm, Link } from "@inertiajs/react";
-import SelectInput from "@/Components/SelectInput";
 
 export default function Create({ auth, projects, users }) {
 
@@ -156,7 +156,7 @@ export default function Create({ auth, projects, users }) {
                                     >
                                         <option value="">Select Status</option>
                                         <option value="pending">Pending</option>
-                                        <option value="in progress">In Progress</option>
+                                        <option value="in_progress">In Progress</option>
                                         <option value="completed">Completed</option>
                                     </SelectInput>
                                     <InputError className="text-red-500 text-sm mt-2">{errors.status}</InputError>

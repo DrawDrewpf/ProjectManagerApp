@@ -1,8 +1,11 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router } from "@inertiajs/react";
-import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from "@/constants";
-import TasksTable from "@/Pages/Tasks/TasksTable";
+import { Head, Link, router } from '@inertiajs/react';
 import { useState, useCallback, useEffect } from 'react';
+
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+
+import DataTable from '@/Components/DataTables/DataTable';
+
+import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP, TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP, TASK_PRIORITY_CLASS_MAP, TASK_PRIORITY_TEXT_MAP } from "@/constants";
 
 export default function Show({ auth, project, tasks, queryParams = null }) {
 
@@ -32,7 +35,7 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
     queryParams = queryParams || {};
     const [debouncedQueryParams, setDebouncedQueryParams] = useState(queryParams);
 
-    // Debounce function
+    // Function debounce
     // This function will be used to debounce the searchfieldsChanged function
     const debounce = (func, delay) => {
         let timeoutId;
@@ -45,7 +48,7 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
             }, delay);
         };
     };
-    // searchfieldsChanged function
+    // Function searchfieldsChanged 
     // This function will be called when the search fields change
     const searchfieldsChanged = (name, value) => {
         setDebouncedQueryParams(prevState => ({
@@ -53,11 +56,11 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
             [name]: value
         }));
     };
-    // debouncedSearchfieldsChanged function
+    // Function debouncedSearchfieldsChanged
     // This function will be used to debounce the searchfieldsChanged function
     const debouncedSearchfieldsChanged = useCallback(debounce(searchfieldsChanged, 300), []);
 
-    // sortChanged function
+    // Function sortChanged
     // This function will be called when the sort field changes
     const sortChanged = (name) => {
         setDebouncedQueryParams(prevState => {
@@ -75,12 +78,88 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
         router.get(route('projects.show', project.id), debouncedQueryParams, { preserveState: true });
     }, [debouncedQueryParams, project.id]);
 
+    const taskColumns = [
+        { key: 'id', label: 'ID', sortable: true },
+        { key: 'name', label: 'Name', sortable: true },
+        {
+            key: 'status',
+            label: 'Status',
+            sortable: true,
+            render: (item) => (
+                <span
+                    className={[
+                        "px-2 py-1 rounded text-white text-xs",
+                        TASK_STATUS_CLASS_MAP[item.status],
+                    ].join(" ")}
+                >
+                    {TASK_STATUS_TEXT_MAP[item.status]}
+                </span>
+            ),
+        },
+        {
+            key: 'priority',
+            label: 'Priority',
+            sortable: true,
+            render: (item) => (
+                <span
+                    className={[
+                        "px-2 py-1 rounded text-white text-xs",
+                        TASK_PRIORITY_CLASS_MAP[item.priority],
+                    ].join(" ")}
+                >
+                    {TASK_PRIORITY_TEXT_MAP[item.priority]}
+                </span>
+            ),
+        },
+        {
+            key: 'created_at',
+            label: 'Created Date',
+            sortable: true,
+            render: (item) => new Date(item.created_at).toLocaleDateString(),
+        },
+        {
+            key: 'due_date',
+            label: 'Due Date',
+            sortable: true,
+            render: (item) => item.due_date ? new Date(item.due_date).toLocaleDateString() : 'N/A',
+        },
+    ];
+
+    const taskRowActions = (taskItem) => (
+        <div className="space-x-2 whitespace-nowrap">
+            <Link
+                href={route('tasks.edit', taskItem.id)}
+                className="text-blue-600 hover:text-blue-900"
+            >
+                Edit
+            </Link>
+            <Link
+                href={route('tasks.show', taskItem.id)}
+                className="text-green-600 hover:text-green-900"
+            >
+                View
+            </Link>
+            <button
+                onClick={() => {
+                    if (confirm('Are you sure you want to delete this task?')) {
+                        router.delete(route('tasks.destroy', taskItem.id), {
+                            preserveScroll: true,
+                        });
+                    }
+                }}
+                className="text-red-600 hover:text-red-900"
+            >
+                Delete
+            </button>
+        </div>
+    );
+
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200">{`Project "${projectName}"`}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{`Project: ${project.name}`}</h2>}
         >
-            <Head title={`Project: ${projectName}`} />
+            <Head title={`Project: ${project.name}`} />
             {/* Project details */}
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -152,14 +231,16 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             <h3 className="text-xl font-bold mb-4">Project Tasks</h3>
-                            {/* TasksTable */}
-                            <TasksTable
-                                tasks={tasks}
-                                queryParams={queryParams}
-                                debouncedQueryParams={debouncedQueryParams}
-                                debouncedSearchfieldsChanged={debouncedSearchfieldsChanged}
-                                sortChanged={sortChanged}
-                                hideProjectColumn={true}
+                            {/* DataTable for tasks */}
+                            <DataTable
+                                fetchUrl={route('tasks.index')}
+                                columns={taskColumns}
+                                initialQueryParams={{ 
+                                    ...queryParams,
+                                    project_id: project.id 
+                                }}
+                                rowActions={taskRowActions}
+                                globalSearchPlaceholder="Search tasks in this project..."
                             />
                         </div>
                     </div>

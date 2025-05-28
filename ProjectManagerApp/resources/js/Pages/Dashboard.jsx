@@ -1,8 +1,77 @@
+import { Head, Link, router } from '@inertiajs/react'; 
+
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+
+import DataTable from '@/Components/DataTables/DataTable';
+import TableCell from '@/Components/DataTables/TableCell';
+import StatusBadge from '@/Components/DataTables/StatusBadge';
+import ActionButton from '@/Components/DataTables/ActionButton'; 
+
 import { TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP } from "@/constants.js";
 
-export default function Dashboard({ auth, totalPendingTasks, myPendingTasks, totalprogressTasks, myProgressTasks, totalCompletedTasks, myCompletedTasks, activeTasks }) {
+export default function Dashboard({
+    auth,
+    totalPendingTasks,
+    myPendingTasks,
+    totalProgressTasks, 
+    myProgressTasks,
+    totalCompletedTasks,
+    myCompletedTasks,
+}) {
+    const activeTaskColumns = [
+        { 
+            key: 'id', 
+            label: 'ID', 
+            sortable: true,
+            render: (item) => <TableCell type="number" value={item.id} asCell={false} />
+        },
+        {
+            key: 'project.name',
+            label: 'Project Name',
+            sortable: true, 
+            render: (item) => <TableCell type="text" value={item.project?.name} asCell={false} />
+        },
+        { 
+            key: 'name', 
+            label: 'Task Name', 
+            sortable: true,
+            render: (item) => <TableCell type="text" value={item.name} asCell={false} />
+        },
+        {
+            key: 'status',
+            label: 'Status',
+            sortable: true,
+            render: (item) => (
+                <StatusBadge status={item.status} size="sm">
+                    {TASK_STATUS_TEXT_MAP[item.status]}
+                </StatusBadge>
+            ),
+        },
+        {
+            key: 'due_date',
+            label: 'Due Date',
+            sortable: true,
+            render: (item) => <TableCell type="date" value={item.due_date} asCell={false} />
+        },
+    ];
+
+    const activeTaskRowActions = (taskItem) => (
+        <div className="flex items-center justify-center space-x-2">
+            <ActionButton
+                href={route('tasks.show', taskItem.id)}
+                variant="success"
+                size="xs"
+            >
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                View
+            </ActionButton>
+        </div>
+    );
+
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -14,9 +83,9 @@ export default function Dashboard({ auth, totalPendingTasks, myPendingTasks, tot
         >
             <Head title="Dashboard" />
 
-            <div className="py-12 ">
+            <div className="py-4 h-full flex flex-col">
                 {/* Tasks status Info */}
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 flex-shrink-0">
 
                     <div className="p-6 text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
                         <h3 className='text-yellow-500 text-2xl font-semibold'>Pending Tasks</h3>
@@ -27,7 +96,8 @@ export default function Dashboard({ auth, totalPendingTasks, myPendingTasks, tot
                     <div className="p-6 text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
                         <h3 className='text-blue-500 text-2xl font-semibold'>Progress Tasks</h3>
                         <p className='text-lg mt-4 font-bold'>
-                            <span className='mr-2'>{myProgressTasks}</span>/<span className='ml-2'>{totalprogressTasks}</span>
+                           
+                            <span className='mr-2'>{myProgressTasks}</span>/<span className='ml-2'>{totalProgressTasks}</span> 
                         </p>
                     </div>
                     <div className="p-6 text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
@@ -40,46 +110,19 @@ export default function Dashboard({ auth, totalPendingTasks, myPendingTasks, tot
                 </div>
 
                 {/* My Active Tasks */}
-                <div className="mt-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow">
-                        <h3 className='text-black dark:text-white text-3xl font-semibold mb-4'>My Active Tasks</h3>
-                        <div className="overflow-auto">
-                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-gray-400 border-b-2 border-gray-500">
-                                    <tr className="whitespace-nowrap">
-                                        <th className="px-3 py-4">ID</th>
-                                        <th className="px-3 py-4">Project Name</th>
-                                        <th className="px-3 py-4">Task Name</th>
-                                        <th className="px-3 py-4">Status</th>
-                                        <th className="px-3 py-4">Due Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {activeTasks.data.length > 0 ? (
-                                        activeTasks.data.map(task => (
-                                            <tr key={task.id} className="bg-white border-b dark:bg-gray-700 dark:border-gray-700">
-                                                <td className="px-3 py-4">{task.id}</td>
-                                                <td className="px-3 py-4">{task.project.name}</td>
-                                                <td className="px-3 py-4">
-                                                    <Link href={route('tasks.show', task.id)} className="hover:underline text-blue-600 dark:text-blue-400">
-                                                        {task.name}
-                                                    </Link>
-                                                </td>
-                                                <td className="px-2 py-4">
-                                                    <span className={`px-3 py-1.5 rounded text-white ${TASK_STATUS_CLASS_MAP[task.status]}`}>
-                                                        {TASK_STATUS_TEXT_MAP[task.status]}
-                                                    </span>
-                                                </td>
-                                                <td className="px-3 py-4">{task.due_date || 'Not set'}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <td colSpan="6" className="px-3 py-4 text-center">No active tasks available.</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                <div className="px-4 sm:px-6 lg:px-8 flex-grow flex flex-col">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow flex-grow flex flex-col">
+                        <h3 className='text-gray-900 dark:text-white text-2xl font-semibold mb-4 flex-shrink-0'>My Active Tasks</h3>
+                        <div className="flex-grow">
+                            <DataTable
+                                fetchUrl={route('dashboard.myActiveTasksData')} 
+                                columns={activeTaskColumns}
+                                rowActions={activeTaskRowActions}
+                                initialQueryParams={{ sort_field: 'due_date', sort_direction: 'asc' }}
+                                globalSearchPlaceholder="Search my tasks..."
+                                showGlobalSearch={true}
+                                fetchStrategy="json" 
+                            />
                         </div>
                     </div>
                 </div>

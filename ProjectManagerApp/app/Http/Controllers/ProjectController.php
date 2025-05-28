@@ -24,8 +24,8 @@ class ProjectController extends Controller
         $sortField= request('sort_field', 'created_at');
         $sortDirection= request('sort_direction',"desc");
 
-        if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+        if (request('search')) {
+            $query->where('name', 'like', '%' . request('search') . '%');
         }
         if (request('status')) {
             $query->where('status', request('status'));
@@ -34,9 +34,14 @@ class ProjectController extends Controller
         $projects = $query->orderBy($sortField,$sortDirection) 
         ->paginate(10);
 
+        $projects->appends(request()->query());
+        
         return inertia('Projects/Index', [
-
-            'projects' => ProjectResource::collection($projects),
+            'projects' => ProjectResource::collection($projects)->additional([
+                'meta' => [
+                    'current_query_params' => request()->query() ?: []
+                ]
+            ]),
             'queryParams' => request()->query() ?: null,
         ]);
     }

@@ -21,7 +21,7 @@ class TaskFactory extends Factory
             'description' => fake()->realText(),
             'due_date' => fake()->dateTimeBetween('now', '+1 year'),
             'status' => fake()
-                ->randomElement(['pending', 'completed', 'in progress']),
+                ->randomElement(['pending', 'completed', 'in_progress']),
             'priority' => fake()
                 ->randomElement(['low', 'medium', 'high']),
             'image_path' => fake()->imageUrl(),

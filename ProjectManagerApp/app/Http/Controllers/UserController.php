@@ -27,20 +27,26 @@ class UserController extends Controller
         $sortField= request('sort_field', 'created_at');
         $sortDirection= request('sort_direction',"desc");
 
-        if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
-        }
-        if (request('email')) {
-            $query->where('email', 'like', '%' . request('email') . '%');
+        if (request('search')) { 
+            $searchTerm = request('search');
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('email', 'like', '%' . $searchTerm . '%');
+            });
         }
        
 
         $users = $query->orderBy($sortField,$sortDirection) 
         ->paginate(10);
+        
+        $users->appends(request()->query());
 
         return inertia('Users/Index', [
-
-            'users' => UserResource::collection($users),
+            'users' => UserResource::collection($users)->additional([
+                'meta' => [
+                    'current_query_params' => request()->query() ?: []
+                ]
+            ]),
             'queryParams' => request()->query() ?: null,
         ]);
     }

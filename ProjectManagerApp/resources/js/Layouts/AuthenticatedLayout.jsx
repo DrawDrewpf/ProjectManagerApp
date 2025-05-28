@@ -275,7 +275,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 </div>
             </nav>
 
-            <div className="flex flex-col flex-grow  bg-white dark:bg-gray-900"> 
+            <div className="flex flex-col flex-grow w-full h-full bg-white dark:bg-gray-900"> 
                 {header && (
                     <header className="shadow bg-gray-50 dark:bg-gray-800"> 
                         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -284,7 +284,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     </header>
                 )}
 
-                <main className='flex-grow'>
+                <main className='flex-grow w-full h-full'>
                     {children}
                 </main>
             </div>

@@ -21,13 +21,16 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $query = Task::query();
+        $query = Task::query()->with(['project', 'assignedUser', 'createdBy', 'updatedBy']);
 
         $sortField = request('sort_field', 'created_at');
         $sortDirection = request('sort_direction', "desc");
 
-        if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+        if (request('search')) {
+            $searchTerm = request('search');
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%');
+            });
         }
         if (request('status')) {
             $query->where('status', request('status'));
@@ -36,9 +39,14 @@ class TaskController extends Controller
         $tasks = $query->orderBy($sortField, $sortDirection)
             ->paginate(10);
 
-        return inertia('Tasks/Index', [
+        $tasks->appends(request()->query());
 
-            'tasks' => TaskResource::collection($tasks),
+        return inertia('Tasks/Index', [
+            'tasks' => TaskResource::collection($tasks)->additional([
+                'meta' => [
+                    'current_query_params' => request()->query() ?: []
+                ]
+            ]),
             'queryParams' => request()->query() ?: null,
         ]);
     }
@@ -145,14 +153,17 @@ class TaskController extends Controller
     }
 
     public function myTasks(){
-        $user = auth()->user();
-        $query = Task::query() ->where('assigned_user_id', $user->id);
+        $user = Auth::user(); 
+        $query = Task::query()->where('assigned_user_id', $user->id)->with(['project', 'assignedUser', 'createdBy', 'updatedBy']);
 
         $sortField = request('sort_field', 'created_at');
         $sortDirection = request('sort_direction', "desc");
 
-        if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+        if (request('search')) {
+            $searchTerm = request('search');
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%');
+            });
         }
         if (request('status')) {
             $query->where('status', request('status'));
@@ -161,10 +172,15 @@ class TaskController extends Controller
         $tasks = $query->orderBy($sortField, $sortDirection)
             ->paginate(10);
 
+        $tasks->appends(request()->query());
+
         return inertia('Tasks/Index', [
-            'tasks' => TaskResource::collection($tasks),
+            'tasks' => TaskResource::collection($tasks)->additional([
+                'meta' => [
+                    'current_query_params' => request()->query() ?: []
+                ]
+            ]),
             'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
             'isMyTasks' => true,
         ]);
     }

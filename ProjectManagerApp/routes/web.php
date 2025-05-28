@@ -21,6 +21,7 @@ Route::get('/terms', function () {
 
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/my-active-tasks-data', [DashboardController::class, 'myActiveTasksData'])->name('dashboard.myActiveTasksData');
     Route::resource('projects', ProjectController::class);
     Route::get('tasks/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::resource('tasks', TaskController::class);

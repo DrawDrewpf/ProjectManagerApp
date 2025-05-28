@@ -124,3 +124,68 @@
     transform: rotate(-10deg);
   }
 }
+
+/* DataTable Enhanced Styles */
+.data-table-enhanced {
+  @apply shadow-2xl rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700;
+}
+
+.data-table-enhanced .table-row-hover {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.data-table-enhanced .table-row-hover:hover {
+  @apply bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 transform scale-[1.01] shadow-md;
+}
+
+.data-table-enhanced .action-button {
+  @apply inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.data-table-enhanced .action-button-edit {
+  @apply bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg focus:ring-blue-500;
+}
+
+.data-table-enhanced .action-button-view {
+  @apply bg-emerald-500 hover:bg-emerald-600 text-white shadow-md hover:shadow-lg focus:ring-emerald-500;
+}
+
+.data-table-enhanced .action-button-delete {
+  @apply bg-red-500 hover:bg-red-600 text-white shadow-md hover:shadow-lg focus:ring-red-500;
+}
+
+.data-table-enhanced .status-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ring-1 ring-inset;
+}
+
+/* Custom scrollbar for table */
+.data-table-enhanced .table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.data-table-enhanced .table-container::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-700 rounded-lg;
+}
+
+.data-table-enhanced .table-container::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-lg;
+}
+
+.data-table-enhanced .table-container::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Loading animation enhancement */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading-pulse {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
