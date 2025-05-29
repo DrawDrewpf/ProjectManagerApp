@@ -1,8 +1,23 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router } from "@inertiajs/react";
-import { USER_STATUS_CLASS_MAP, USER_STATUS_TEXT_MAP } from "@/constants";
-import TasksTable from "@/Pages/Tasks/TasksTable";
+import { Head, router, Link } from "@inertiajs/react";
 import { useState, useCallback, useEffect } from 'react';
+
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+
+import { USER_STATUS_CLASS_MAP, USER_STATUS_TEXT_MAP } from "@/constants";
+
+import TasksTable from "@/Pages/Tasks/TasksTable";
+import StatusBadge from '@/Components/DataTables/StatusBadge';
+import ActionButton from '@/Components/DataTables/ActionButton';
+
+import { 
+    ArrowLeftIcon, 
+    CalendarIcon,
+    UserIcon,
+    ClockIcon,
+    DocumentTextIcon,
+    UserCircleIcon,
+    ListBulletIcon
+} from '@heroicons/react/24/outline';
 
 export default function Show({ auth, user, tasks, queryParams = null }) {
 
@@ -73,83 +88,165 @@ export default function Show({ auth, user, tasks, queryParams = null }) {
         router.get(route('users.show', user.code), debouncedQueryParams, { preserveState: true });
     }, [debouncedQueryParams, user.code]);
 
-    return (
+    const deleteUser = () => {
+        if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+            router.delete(route('users.destroy', user.code));
+        }
+    };    return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200">{`User "${userName}"`}</h2>}
+            header={
+                <div className="flex items-center space-x-4">
+                    <Link 
+                        href={route('users.index')}
+                        className="flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                        <ArrowLeftIcon className="w-5 h-5 mr-1" />
+                        Back to Users
+                    </Link>
+                    <div className="border-l border-gray-300 dark:border-gray-600 h-6"></div>
+                    <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                        User Profile
+                    </h2>
+                </div>
+            }
         >
             <Head title={`User: ${userName}`} />
-            {/* User details */}
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            {/* User Image */}
-                            <div className="mb-6">
+            
+            {/* Hero Section */}
+            <div className="bg-gradient-to-br from-purple-50 to-pink-100 dark:from-gray-800 dark:to-gray-900 py-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* User Image */}
+                        <div className="lg:col-span-1">
+                            <div className="aspect-square rounded-xl overflow-hidden shadow-lg bg-white dark:bg-gray-800 p-4">
                                 <img
                                     src={user?.image_path || '/images/default_user.png'}
                                     alt={userName}
-                                    className="w-full h-48 object-cover rounded-lg shadow-md"
+                                    className="w-full h-full object-cover rounded-lg"
                                 />
-                            </div>                            <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
-                                <h3 className="text-xl font-bold">User Details</h3>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">Code: {user?.code || 'N/A'}</span>
                             </div>
-
-                            {/* User details */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <div>
-                                    <h4 className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Name</h4>
-                                    <p className="text-lg font-medium">{userName}</p>
-                                </div>
-
-                                <div>
-                                    <h4 className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Status</h4>
-                                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusClass}`}>
-                                        {statusText}
+                        </div>
+                        
+                        {/* User Info */}
+                        <div className="lg:col-span-2 space-y-6">
+                            <div>
+                                <div className="flex items-center space-x-3 mb-2">
+                                    <UserCircleIcon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                        Code: {user?.code || 'N/A'}
                                     </span>
                                 </div>
-
-                                <div>
-                                    <h4 className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Due Date</h4>
-                                    <p>{formattedDueDate}</p>
+                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                                    {userName}
+                                </h1>
+                                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                                    {user?.email || 'No email provided'}
+                                </p>                                <div className="flex items-center space-x-4 mb-4">
+                                    <StatusBadge status={user?.status} size="sm">
+                                        {USER_STATUS_TEXT_MAP[user?.status]}
+                                    </StatusBadge>
                                 </div>
-
-                                <div>
-                                    <h4 className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Created By</h4>
-                                    <p>{user?.createdBy?.name || 'Not specified'}</p>
-                                </div>
-
-                                <div>
-                                    <h4 className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Created On</h4>
-                                    <p>{formattedCreatedDate}</p>
-                                </div>
-
-                                <div>
-                                    <h4 className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Updated By</h4>
-                                    <p>{user?.updatedBy?.name || 'Not specified'}</p>
-                                </div>
-
                             </div>
-
-                            <div className="mt-6">
-                                <h4 className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Description</h4>
-                                <p className="p-3 bg-gray-50 dark:bg-gray-700 rounded shadow-inner">
-                                    {user?.description || 'No description provided.'}
-                                </p>
+                              {/* Action Buttons */}
+                            <div className="flex flex-wrap gap-3">
+                                <ActionButton
+                                    href={route('users.edit', user.code)}
+                                    variant="primary"
+                                >
+                                    <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit User
+                                </ActionButton>
+                                <ActionButton
+                                    onClick={deleteUser}
+                                    variant="danger"
+                                >
+                                    <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Delete User
+                                </ActionButton>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Task Table */}
+            {/* User Details */}
             <div className="py-8">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            <h3 className="text-xl font-bold mb-4">User Tasks</h3>
-                            {/* TasksTable */}
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
+                        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                <DocumentTextIcon className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
+                                User Information
+                            </h3>
+                        </div>
+                        
+                        <div className="p-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-4">
+                                    <div className="flex items-start space-x-3">
+                                        <CalendarIcon className="w-5 h-5 text-gray-400 mt-0.5" />
+                                        <div>
+                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Due Date</dt>
+                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white">{formattedDueDate}</dd>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-start space-x-3">
+                                        <UserIcon className="w-5 h-5 text-gray-400 mt-0.5" />
+                                        <div>
+                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Created By</dt>
+                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white">{user?.createdBy?.name || 'Not specified'}</dd>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-start space-x-3">
+                                        <ClockIcon className="w-5 h-5 text-gray-400 mt-0.5" />
+                                        <div>
+                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Created On</dt>
+                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white">{formattedCreatedDate}</dd>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="space-y-4">
+                                    <div className="flex items-start space-x-3">
+                                        <UserIcon className="w-5 h-5 text-gray-400 mt-0.5" />
+                                        <div>
+                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Updated By</dt>
+                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white">{user?.updatedBy?.name || 'Not specified'}</dd>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+                                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Description</dt>
+                                <dd className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                    {user?.description || 'No description provided.'}
+                                </dd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* User Tasks */}
+            <div className="pb-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
+                        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                <ListBulletIcon className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
+                                User Tasks
+                            </h3>
+                        </div>
+                        
+                        <div className="p-6">
                             <TasksTable
                                 tasks={tasks}
                                 queryParams={queryParams}

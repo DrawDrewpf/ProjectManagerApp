@@ -1,12 +1,22 @@
 import { Head, useForm, Link } from "@inertiajs/react";
 
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
 import SelectInput from "@/Components/SelectInput";
+import ActionButton from "@/Components/DataTables/ActionButton";
 
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { 
+    ArrowLeftIcon, 
+    PhotoIcon, 
+    DocumentTextIcon, 
+    CalendarIcon,
+    PencilIcon,
+    XMarkIcon
+} from "@heroicons/react/24/outline";
 
 export default function Edit({ auth, project}) {
 
@@ -32,127 +42,170 @@ export default function Edit({ auth, project}) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    Edit Project "{project.name}"
-                </h2>
+                <div className="flex items-center space-x-4">
+                    <Link 
+                        href={route('projects.index')}
+                        className="flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                        <ArrowLeftIcon className="w-5 h-5 mr-1" />
+                        Back to Projects
+                    </Link>
+                    <div className="border-l border-gray-300 dark:border-gray-600 h-6"></div>
+                    <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                        Edit Project: {project.name}
+                    </h2>
+                </div>
             }
         >
-            <Head title="Projects" />
+            <Head title={`Edit Project: ${project.name}`} />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            <form
-                                className=""
-                                onSubmit={ onSubmit }
-                                action="">
-
-                                <div>
-                                    {/* Preview Image*/}
-                                <div className="mb-6">
-                                    <img
-                                        src={project?.image_path || '/images/default_project.png'}
-                                        alt={project.name}
-                                        className="w-full h-48 object-cover rounded-lg shadow-md"
-                                    />
-                                </div>
-                                    <InputLabel htmlFor="project_image_path" value="Project Image" />
-                                    <TextInput id="project_image_path"
-                                        type="file"
-                                        name="image"
-                                        className="mt-1 block w-full"
-                                        onChange={(e) => setData('image', e.target.files[0])}
-                                    />
-                                    <InputError className="text-red-500 text-sm mt-2">{errors.image}</InputError>
-                                </div>
-
-                                {/* Name */}
-                                <div className="mt-4">
-                                    <InputLabel htmlFor="name" value="Project Name" />
-                                    <TextInput id="name"
-                                        type="text"
-                                        name="name"
-                                        value={data.name}
-                                        className="mt-1 block w-full"
-                                        autoComplete="name"
-                                        isFocused={true}
-                                        onChange={(e) => setData('name', e.target.value)}
-                                    />
-                                    <InputError className="text-red-500 text-sm mt-2">{errors.name}</InputError>
-                                </div>
-
-                                {/* Description */}
-                                <div className="mt-4">
-                                    <InputLabel htmlFor="description" value="Project Description" />
-                                    <TextAreaInput id="description"
-                                        type="text"
-                                        name="description"
-                                        value={data.description}
-                                        className="mt-1 block w-full"
-                                        autoComplete="description"
-                                        onChange={(e) => setData('description', e.target.value)}
-                                    />
-                                    <InputError className="text-red-500 text-sm mt-2">{errors.description}</InputError>
-                                </div>
-
-                                {/* Due Date */}
-                                <div className="mt-4">
-                                    <InputLabel htmlFor="due_date" value="Project Deadline" />
-                                    <TextInput id="due_date"
-                                        type="date"
-                                        name="due_date"
-                                        value={data.due_date}
-                                        className="mt-1 block w-full"
-                                        autoComplete="due_date"
-                                        onChange={(e) => setData('due_date', e.target.value)}
-                                    />
-                                    <InputError className="text-red-500 text-sm mt-2">{errors.due_date}</InputError>
-                                </div>
-
-                                {/* Status */}
-                                <div className="mt-4">
-                                    <InputLabel htmlFor="project_status" value="Project Status" />
-                                    <SelectInput 
-                                        id="project_status"
-                                        name="status"
-                                        className="mt-1 block w-full"
-                                        autoComplete="status"
-                                        value={data.status}
-                                        onChange={(e) => setData('status', e.target.value)}
-                                    >
-                                    <option value="">Select Status</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="in_progress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                    </SelectInput>
-                                    <InputError className="text-red-500 text-sm mt-2">{errors.status}</InputError>
-                                </div>
-
-                                
-
-                                {/* Submit/Cancel Button */}
-                                <div className="flex items-center justify-end mt-4">
-                                    <button
-                                        className="inline-flex items-center px-4 py-2 bg-emerald-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-400 active:bg-emerald-600 focus:outline-none focus:border-emerald-700 focus:ring focus:ring-blue-200 disabled:opacity-25 transition ease-in-out duration-150"
-                                        type="submit"
-                                    >
-                                        Edit Project
-                                    </button>
-                                    <Link href={route('projects.index')}
-                                        className="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 disabled:opacity-25 transition ease-in-out duration-150 ml-4"
-                                        type="button"
-                                    >
-                                        Cancel
-                                    </Link>
-                                </div>
-
-                            </form>
+            <div className="py-8">
+                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden">
+                        <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 border-b border-gray-200 dark:border-gray-600">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                <PencilIcon className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" />
+                                Edit Project Information
+                            </h3>
+                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                Update the project details below
+                            </p>
                         </div>
+                        
+                        <form onSubmit={onSubmit} className="p-6">
+                            <div className="space-y-8">
+                                {/* Current Image Preview */}
+                                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                                        <PhotoIcon className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" />
+                                        Project Image
+                                    </h4>
+                                    <div className="mb-4">
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Current Image:</p>
+                                        <div className="w-full max-w-md">
+                                            <img
+                                                src={project?.image_path || '/images/default_project.png'}
+                                                alt={project.name}
+                                                className="w-full h-48 object-cover rounded-lg shadow-md border border-gray-200 dark:border-gray-600"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <InputLabel htmlFor="project_image_path" value="Upload New Image (optional)" />
+                                        <TextInput 
+                                            id="project_image_path"
+                                            type="file"
+                                            name="image"
+                                            className="mt-1 block w-full"
+                                            onChange={(e) => setData('image', e.target.files[0])}
+                                        />
+                                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Leave empty to keep current image</p>
+                                        <InputError className="mt-2">{errors.image}</InputError>
+                                    </div>
+                                </div>
+
+                                {/* Basic Information Section */}
+                                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                                        <DocumentTextIcon className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" />
+                                        Basic Information
+                                    </h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <InputLabel htmlFor="name" value="Project Name" />
+                                            <TextInput 
+                                                id="name"
+                                                type="text"
+                                                name="name"
+                                                value={data.name}
+                                                className="mt-1 block w-full"
+                                                autoComplete="name"
+                                                isFocused={true}
+                                                onChange={(e) => setData('name', e.target.value)}
+                                                placeholder="Enter project name"
+                                            />
+                                            <InputError className="mt-2">{errors.name}</InputError>
+                                        </div>
+
+                                        <div>
+                                            <InputLabel htmlFor="project_status" value="Project Status" />
+                                            <SelectInput 
+                                                id="project_status"
+                                                name="status"
+                                                className="mt-1 block w-full"
+                                                autoComplete="status"
+                                                value={data.status}
+                                                onChange={(e) => setData('status', e.target.value)}
+                                            >
+                                                <option value="">Select Status</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="in_progress">In Progress</option>
+                                                <option value="completed">Completed</option>
+                                            </SelectInput>
+                                            <InputError className="mt-2">{errors.status}</InputError>
+                                        </div>
+
+                                        <div className="md:col-span-2">
+                                            <InputLabel htmlFor="description" value="Project Description" />
+                                            <TextAreaInput 
+                                                id="description"
+                                                name="description"
+                                                value={data.description}
+                                                className="mt-1 block w-full"
+                                                autoComplete="description"
+                                                onChange={(e) => setData('description', e.target.value)}
+                                                placeholder="Describe the project objectives, scope, and requirements..."
+                                                rows={4}
+                                            />
+                                            <InputError className="mt-2">{errors.description}</InputError>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Timeline Section */}
+                                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                                        <CalendarIcon className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" />
+                                        Timeline
+                                    </h4>
+                                    <div>
+                                        <InputLabel htmlFor="due_date" value="Project Deadline" />
+                                        <TextInput 
+                                            id="due_date"
+                                            type="date"
+                                            name="due_date"
+                                            value={data.due_date}
+                                            className="mt-1 block w-full max-w-md"
+                                            autoComplete="due_date"
+                                            onChange={(e) => setData('due_date', e.target.value)}
+                                        />
+                                        <InputError className="mt-2">{errors.due_date}</InputError>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Form Actions */}
+                            <div className="flex items-center justify-end space-x-4 mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
+                                <ActionButton
+                                    href={route('projects.index')}
+                                    variant="secondary"
+                                    icon={<XMarkIcon className="w-4 h-4" />}
+                                >
+                                    Cancel
+                                </ActionButton>
+                                <ActionButton
+                                    type="submit"
+                                    variant="primary"
+                                    icon={<PencilIcon className="w-4 h-4" />}
+                                    disabled={processing}
+                                >
+                                    {processing ? 'Saving...' : 'Update Project'}
+                                </ActionButton>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-
         </AuthenticatedLayout>
     )
 }
