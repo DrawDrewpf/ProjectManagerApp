@@ -26,6 +26,11 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('tasks/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::resource('tasks', TaskController::class);
     Route::resource('users', UserController::class);
+    
+    // Demo pages
+    Route::get('/demo/dynamic-select', function () {
+        return Inertia::render('Demo/DynamicSelectDemo');
+    })->name('demo.dynamic-select');
 });
 
 Route::middleware('auth')->group(function () {

@@ -7,6 +7,7 @@ import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
 import SelectInput from "@/Components/SelectInput";
+import DynamicSelect from "@/Components/DynamicSelect";
 import ActionButton from "@/Components/DataTables/ActionButton";
 
 import { 
@@ -65,7 +66,7 @@ export default function Edit({ auth, task, projects, users }) {
             <Head title={`Edit Task: ${task.name}`} />
 
             <div className="py-8">
-                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
                         {/* Header */}
                         <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
@@ -101,33 +102,53 @@ export default function Edit({ auth, task, projects, users }) {
                         {/* Form */}
                         <form onSubmit={onSubmit} className="p-6 space-y-6">
                             {/* Project Selection */}
-                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                <div className="flex items-center mb-3">
-                                    <DocumentTextIcon className="w-5 h-5 text-blue-500 mr-2" />
-                                    <InputLabel htmlFor="project_id" value="Project Assignment" className="font-medium" />
+                            <div className="relative bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-50 dark:from-blue-900/20 dark:via-blue-800/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200/50 dark:border-blue-700/50 shadow-sm">
+                                <div className="absolute top-4 right-4 w-8 h-8 bg-blue-500/10 dark:bg-blue-400/10 rounded-full flex items-center justify-center">
+                                    <DocumentTextIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                                 </div>
-                                <SelectInput
+                                <div className="flex items-center mb-4">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
+                                        <DocumentTextIcon className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <InputLabel htmlFor="project_id" value="Project Assignment" className="font-semibold text-gray-900 dark:text-white text-base" />
+                                        <p className="text-sm text-blue-600 dark:text-blue-400 mt-0.5">
+                                            Select the project this task belongs to
+                                        </p>
+                                    </div>
+                                </div>
+                                <DynamicSelect
                                     id="project_id"
                                     name="project_id"
                                     value={data.project_id}
-                                    className="mt-1 block w-full"
                                     onChange={(e) => setData('project_id', e.target.value)}
-                                >
-                                    <option value="">Select Project</option>
-                                    {projects.data.map((project) => (
-                                        <option key={project.id} value={project.id}>{project.name}</option>
-                                    ))}
-                                </SelectInput>
+                                    apiEndpoint="/api/projects"
+                                    placeholder="Selecciona un proyecto..."
+                                    className="mt-1 block w-full"
+                                    searchable={true}
+                                    allowEmpty={true}
+                                    emptyLabel="Sin proyecto"
+                                />
                                 <InputError className="mt-2">{errors.project_id}</InputError>
                             </div>
 
                             {/* Basic Information */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 {/* Task Image */}
-                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                    <div className="flex items-center mb-3">
-                                        <PhotoIcon className="w-5 h-5 text-emerald-500 mr-2" />
-                                        <InputLabel htmlFor="task_image_path" value="Update Task Image" className="font-medium" />
+                                <div className="relative bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-900/20 dark:via-teal-800/20 dark:to-cyan-900/20 rounded-xl p-6 border border-emerald-200/50 dark:border-emerald-700/50 shadow-sm">
+                                    <div className="absolute top-4 right-4 w-8 h-8 bg-emerald-500/10 dark:bg-emerald-400/10 rounded-full flex items-center justify-center">
+                                        <PhotoIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                    <div className="flex items-center mb-4">
+                                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
+                                            <PhotoIcon className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <InputLabel htmlFor="task_image_path" value="Update Task Image" className="font-semibold text-gray-900 dark:text-white text-base" />
+                                            <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-0.5">
+                                                Upload a new image for this task
+                                            </p>
+                                        </div>
                                     </div>
                                     <TextInput 
                                         id="task_image_path"
@@ -136,17 +157,27 @@ export default function Edit({ auth, task, projects, users }) {
                                         className="mt-1 block w-full"
                                         onChange={(e) => setData('image', e.target.files[0])}
                                     />
-                                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                        Leave empty to keep current image
+                                    <p className="mt-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg px-3 py-2">
+                                        💡 Leave empty to keep current image
                                     </p>
                                     <InputError className="mt-2">{errors.image}</InputError>
                                 </div>
 
                                 {/* Task Name */}
-                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                    <div className="flex items-center mb-3">
-                                        <DocumentTextIcon className="w-5 h-5 text-purple-500 mr-2" />
-                                        <InputLabel htmlFor="name" value="Task Name" className="font-medium" />
+                                <div className="relative bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 dark:from-purple-900/20 dark:via-violet-800/20 dark:to-indigo-900/20 rounded-xl p-6 border border-purple-200/50 dark:border-purple-700/50 shadow-sm">
+                                    <div className="absolute top-4 right-4 w-8 h-8 bg-purple-500/10 dark:bg-purple-400/10 rounded-full flex items-center justify-center">
+                                        <DocumentTextIcon className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                                    </div>
+                                    <div className="flex items-center mb-4">
+                                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
+                                            <DocumentTextIcon className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <InputLabel htmlFor="name" value="Task Name" className="font-semibold text-gray-900 dark:text-white text-base" />
+                                            <p className="text-sm text-purple-600 dark:text-purple-400 mt-0.5">
+                                                A clear, descriptive task name
+                                            </p>
+                                        </div>
                                     </div>
                                     <TextInput 
                                         id="name"
@@ -162,10 +193,20 @@ export default function Edit({ auth, task, projects, users }) {
                             </div>
 
                             {/* Description */}
-                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                <div className="flex items-center mb-3">
-                                    <DocumentTextIcon className="w-5 h-5 text-gray-500 mr-2" />
-                                    <InputLabel htmlFor="description" value="Task Description" className="font-medium" />
+                            <div className="relative bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 dark:from-slate-900/20 dark:via-gray-800/20 dark:to-zinc-900/20 rounded-xl p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-sm">
+                                <div className="absolute top-4 right-4 w-8 h-8 bg-slate-500/10 dark:bg-slate-400/10 rounded-full flex items-center justify-center">
+                                    <DocumentTextIcon className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                                </div>
+                                <div className="flex items-center mb-4">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
+                                        <DocumentTextIcon className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <InputLabel htmlFor="description" value="Task Description" className="font-semibold text-gray-900 dark:text-white text-base" />
+                                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+                                            Detailed description of the task requirements
+                                        </p>
+                                    </div>
                                 </div>
                                 <TextAreaInput 
                                     id="description"
@@ -180,87 +221,115 @@ export default function Edit({ auth, task, projects, users }) {
                             </div>
 
                             {/* Task Configuration */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* Due Date */}
-                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                    <div className="flex items-center mb-3">
-                                        <CalendarIcon className="w-5 h-5 text-orange-500 mr-2" />
-                                        <InputLabel htmlFor="due_date" value="Due Date" className="font-medium text-sm" />
+                                <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl p-6 border border-orange-200 dark:border-orange-800">
+                                    <div className="flex items-center mb-4">
+                                        <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg mr-3">
+                                            <CalendarIcon className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                                        </div>
+                                        <div>
+                                            <InputLabel htmlFor="due_date" value="Due Date" className="font-semibold text-gray-900 dark:text-white" />
+                                            <p className="text-xs text-orange-600 dark:text-orange-400 mt-0.5">Task deadline</p>
+                                        </div>
                                     </div>
                                     <TextInput 
                                         id="due_date"
                                         type="date"
                                         name="due_date"
                                         value={data.due_date}
-                                        className="mt-1 block w-full"
+                                        className="w-full border-orange-200 dark:border-orange-700 focus:border-orange-400 focus:ring-orange-400/20"
                                         onChange={(e) => setData('due_date', e.target.value)}
                                     />
                                     <InputError className="mt-2">{errors.due_date}</InputError>
                                 </div>
 
                                 {/* Priority */}
-                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                    <div className="flex items-center mb-3">
-                                        <FlagIcon className="w-5 h-5 text-red-500 mr-2" />
-                                        <InputLabel htmlFor="task_priority" value="Priority" className="font-medium text-sm" />
+                                <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
+                                    <div className="flex items-center mb-4">
+                                        <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg mr-3">
+                                            <FlagIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
+                                        </div>
+                                        <div>
+                                            <InputLabel htmlFor="task_priority" value="Priority" className="font-semibold text-gray-900 dark:text-white" />
+                                            <p className="text-xs text-red-600 dark:text-red-400 mt-0.5">Task urgency level</p>
+                                        </div>
                                     </div>
-                                    <SelectInput
+                                    <DynamicSelect
                                         id="task_priority"
                                         name="priority"
                                         value={data.priority}
-                                        className="mt-1 block w-full"
                                         onChange={(e) => setData('priority', e.target.value)}
-                                    >
-                                        <option value="">Select Priority</option>
-                                        <option value="low">Low</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="high">High</option>
-                                        <option value="extreme">Extreme</option>
-                                    </SelectInput>
+                                        apiEndpoint="/api/priorities"
+                                        placeholder="Selecciona prioridad..."
+                                        className="w-full"
+                                        searchable={false}
+                                        allowEmpty={true}
+                                        emptyLabel="Sin prioridad"
+                                        showPriorityBadges={true}
+                                        showIcons={true}
+                                        priorityField="value"
+                                    />
                                     <InputError className="mt-2">{errors.priority}</InputError>
                                 </div>
 
                                 {/* Status */}
-                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                    <div className="flex items-center mb-3">
-                                        <CheckCircleIcon className="w-5 h-5 text-green-500 mr-2" />
-                                        <InputLabel htmlFor="task_status" value="Status" className="font-medium text-sm" />
+                                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                                    <div className="flex items-center mb-4">
+                                        <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg mr-3">
+                                            <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+                                        </div>
+                                        <div>
+                                            <InputLabel htmlFor="task_status" value="Status" className="font-semibold text-gray-900 dark:text-white" />
+                                            <p className="text-xs text-green-600 dark:text-green-400 mt-0.5">Current task state</p>
+                                        </div>
                                     </div>
-                                    <SelectInput
+                                    <DynamicSelect
                                         id="task_status"
                                         name="status"
                                         value={data.status}
-                                        className="mt-1 block w-full"
                                         onChange={(e) => setData('status', e.target.value)}
-                                    >
-                                        <option value="">Select Status</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="in_progress">In Progress</option>
-                                        <option value="completed">Completed</option>
-                                    </SelectInput>
+                                        apiEndpoint="/api/statuses"
+                                        apiParams={{ type: 'task' }}
+                                        placeholder="Selecciona estado..."
+                                        className="w-full"
+                                        searchable={false}
+                                        allowEmpty={true}
+                                        emptyLabel="Sin estado"
+                                        showStatusBadges={true}
+                                        showIcons={true}
+                                        statusField="value"
+                                    />
                                     <InputError className="mt-2">{errors.status}</InputError>
                                 </div>
+                            </div>
 
-                                {/* Assigned User */}
-                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                    <div className="flex items-center mb-3">
-                                        <UserIcon className="w-5 h-5 text-blue-500 mr-2" />
-                                        <InputLabel htmlFor="assigned_user_id" value="Assigned To" className="font-medium text-sm" />
+                            {/* Assigned User - Full Width */}
+                            <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
+                                <div className="flex items-center mb-4">
+                                    <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg mr-3">
+                                        <UserIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                                     </div>
-                                    <SelectInput
-                                        id="assigned_user_id"
-                                        name="assigned_user_id"
-                                        value={data.assigned_user_id}
-                                        className="mt-1 block w-full"
-                                        onChange={(e) => setData('assigned_user_id', e.target.value)}
-                                    >
-                                        <option value="">Select User</option>
-                                        {users.data.map((user) => (
-                                            <option key={user.id} value={user.id}>{user.name}</option>
-                                        ))}
-                                    </SelectInput>
-                                    <InputError className="mt-2">{errors.assigned_user_id}</InputError>
+                                    <div>
+                                        <InputLabel htmlFor="assigned_user_id" value="Assigned User" className="font-semibold text-gray-900 dark:text-white" />
+                                        <p className="text-xs text-purple-600 dark:text-purple-400 mt-0.5">User responsible for this task</p>
+                                    </div>
                                 </div>
+                                <DynamicSelect
+                                    id="assigned_user_id"
+                                    name="assigned_user_id"
+                                    value={data.assigned_user_id}
+                                    onChange={(e) => setData('assigned_user_id', e.target.value)}
+                                    apiEndpoint="/api/users"
+                                    placeholder="Buscar y asignar usuario..."
+                                    className="w-full"
+                                    searchable={true}
+                                    allowEmpty={true}
+                                    emptyLabel="Sin asignar"
+                                    minSearchLength={2}
+                                    searchDelay={300}
+                                />
+                                <InputError className="mt-2">{errors.assigned_user_id}</InputError>
                             </div>
 
                             {/* Action Buttons */}

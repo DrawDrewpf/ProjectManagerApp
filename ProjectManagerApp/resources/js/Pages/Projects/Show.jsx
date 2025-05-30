@@ -16,7 +16,7 @@ import {
     ListBulletIcon
 } from '@heroicons/react/24/outline';
 
-import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP, TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP, TASK_PRIORITY_CLASS_MAP, TASK_PRIORITY_TEXT_MAP } from "@/constants";
+import { PROJECT_STATUS_TEXT_MAP, TASK_STATUS_TEXT_MAP, TASK_PRIORITY_TEXT_MAP } from "@/constants";
 
 export default function Show({ auth, project, tasks, queryParams = null }) {
 
@@ -38,9 +38,8 @@ export default function Show({ auth, project, tasks, queryParams = null }) {
         new Date(project.updated_at).toLocaleDateString() :
         'Not specified';
 
-    // Get status text and class from constants
+    // Get status text from constants
     const statusText = project?.status ? PROJECT_STATUS_TEXT_MAP[project.status] : 'Unknown';
-    const statusClass = project?.status ? PROJECT_STATUS_CLASS_MAP[project.status] : 'bg-gray-400';
 
     const taskColumns = [
         { key: 'code', label: 'Code', sortable: true },

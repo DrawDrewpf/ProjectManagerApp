@@ -7,7 +7,7 @@ import ActionButton from '@/Components/DataTables/ActionButton';
 import StatusBadge from '@/Components/DataTables/StatusBadge';
 import TableCell from '@/Components/DataTables/TableCell';
 
-import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from '@/constants';
+import { PROJECT_STATUS_TEXT_MAP } from '@/constants';
 
 export default function Index({ auth, projects, queryParams = null }) {
 

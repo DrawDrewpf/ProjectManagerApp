@@ -3,11 +3,12 @@ import { useState, useCallback, useEffect } from 'react';
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-import { USER_STATUS_CLASS_MAP, USER_STATUS_TEXT_MAP } from "@/constants";
+import { USER_STATUS_TEXT_MAP, TASK_STATUS_TEXT_MAP, TASK_PRIORITY_TEXT_MAP } from "@/constants";
 
-import TasksTable from "@/Pages/Tasks/TasksTable";
+import DataTable from '@/Components/DataTables/DataTable';
 import StatusBadge from '@/Components/DataTables/StatusBadge';
 import ActionButton from '@/Components/DataTables/ActionButton';
+import TableCell from '@/Components/DataTables/TableCell';
 
 import { 
     ArrowLeftIcon, 
@@ -39,9 +40,88 @@ export default function Show({ auth, user, tasks, queryParams = null }) {
         new Date(user.updated_at).toLocaleDateString() :
         'Not specified';
 
-    // Get status text and class from constants
+    // Get status text from constants
     const statusText = user?.status ? USER_STATUS_TEXT_MAP[user.status] : 'Unknown';
-    const statusClass = user?.status ? USER_STATUS_CLASS_MAP[user.status] : 'bg-gray-400';
+
+    // Define columns for user tasks table
+    const taskColumns = [
+        { 
+            key: 'code', 
+            label: 'Code', 
+            sortable: true,
+            render: (item) => <TableCell type="text" value={item.code} asCell={false} />
+        },
+        {
+            key: 'image',
+            label: 'Image',
+            sortable: false,
+            render: (item) => <TableCell type="image" value={item.image_path} asCell={false} />
+        },
+        { 
+            key: 'name', 
+            label: 'Name', 
+            sortable: true,
+            render: (item) => <TableCell type="text" value={item.name} asCell={false} />
+        },
+        {
+            key: 'project.name', 
+            label: 'Project',
+            sortable: true, 
+            render: (item) => <TableCell type="text" value={item.project?.name} asCell={false} />
+        },
+        {
+            key: 'status',
+            label: 'Status',
+            sortable: true,
+            render: (item) => (
+                <StatusBadge status={item.status} size="sm">
+                    {TASK_STATUS_TEXT_MAP[item.status]}
+                </StatusBadge>
+            ),
+        },
+        {
+            key: 'priority',
+            label: 'Priority',
+            sortable: true,
+            render: (item) => (
+                <StatusBadge status={item.priority} size="sm">
+                    {TASK_PRIORITY_TEXT_MAP[item.priority]}
+                </StatusBadge>
+            ),
+        },
+        {
+            key: 'due_date',
+            label: 'Due Date',
+            sortable: true,
+            render: (item) => <TableCell type="date" value={item.due_date} asCell={false} />
+        },
+    ];
+
+    const taskRowActions = (taskItem) => (
+        <div className="flex items-center justify-center space-x-2">
+            <ActionButton
+                href={route('tasks.edit', taskItem.code)}
+                variant="primary"
+                size="xs"
+            >
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Edit
+            </ActionButton>
+            <ActionButton
+                href={route('tasks.show', taskItem.code)}
+                variant="success"
+                size="xs"
+            >
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                View
+            </ActionButton>
+        </div>
+    );
 
     // Add state and handlers for TasksTable functionality
     queryParams = queryParams || {};
@@ -247,13 +327,13 @@ export default function Show({ auth, user, tasks, queryParams = null }) {
                         </div>
                         
                         <div className="p-6">
-                            <TasksTable
-                                tasks={tasks}
+                            <DataTable
+                                data={tasks}
+                                columns={taskColumns}
+                                rowActions={taskRowActions}
                                 queryParams={queryParams}
-                                debouncedQueryParams={debouncedQueryParams}
-                                debouncedSearchfieldsChanged={debouncedSearchfieldsChanged}
+                                searchfieldsChanged={debouncedSearchfieldsChanged}
                                 sortChanged={sortChanged}
-                                hideUserColumn={true}
                             />
                         </div>
                     </div>

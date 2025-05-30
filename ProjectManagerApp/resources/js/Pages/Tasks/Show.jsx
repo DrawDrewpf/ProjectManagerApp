@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-import { TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP, TASK_PRIORITY_CLASS_MAP, TASK_PRIORITY_TEXT_MAP } from "@/constants";
+import { TASK_STATUS_TEXT_MAP, TASK_PRIORITY_TEXT_MAP } from "@/constants";
 
 import StatusBadge from "@/Components/DataTables/StatusBadge";
 import ActionButton from "@/Components/DataTables/ActionButton";
@@ -38,9 +38,8 @@ export default function Show({ auth, task, tasks, queryParams = null }) {
         new Date(task.updated_at).toLocaleDateString() :
         'Not specified';
 
-    // Get status text and class from constants
+    // Get status text from constants
     const statusText = task?.status ? TASK_STATUS_TEXT_MAP[task.status] : 'Unknown';
-    const statusClass = task?.status ? TASK_STATUS_CLASS_MAP[task.status] : 'bg-gray-400';
 
     // Add state and handlers for TasksTable functionality
     queryParams = queryParams || {};

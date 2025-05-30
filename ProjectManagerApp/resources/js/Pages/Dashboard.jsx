@@ -14,7 +14,7 @@ import {
     SparklesIcon
 } from '@heroicons/react/24/outline';
 
-import { TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP } from "@/constants.js";
+import { TASK_STATUS_TEXT_MAP } from "@/constants.js";
 
 export default function Dashboard({
     auth,

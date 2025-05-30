@@ -56,13 +56,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $projects = Project::all();
-        $users = User::all();
-
-        return inertia('Tasks/Create', [
-            'projects' => UserResource::collection($projects),
-            'users' => UserResource::collection($users),
-        ]);
+        return inertia('Tasks/Create');
     }
 
     /**
@@ -98,12 +92,7 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        $projects = Project::all();
-        $users = User::all();
-
         return inertia('Tasks/Edit', [
-            'projects' => UserResource::collection($projects),
-            'users' => UserResource::collection($users),
             'task' => new TaskResource($task),
         ]);
     }
