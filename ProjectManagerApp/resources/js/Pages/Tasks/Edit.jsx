@@ -6,8 +6,8 @@ import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
-import SelectInput from "@/Components/SelectInput";
 import DynamicSelect from "@/Components/DynamicSelect";
+import DatePicker from "@/Components/DatePicker";
 import ActionButton from "@/Components/DataTables/ActionButton";
 
 import { 
@@ -233,13 +233,17 @@ export default function Edit({ auth, task, projects, users }) {
                                             <p className="text-xs text-orange-600 dark:text-orange-400 mt-0.5">Task deadline</p>
                                         </div>
                                     </div>
-                                    <TextInput 
+                                    <DatePicker
                                         id="due_date"
-                                        type="date"
                                         name="due_date"
                                         value={data.due_date}
-                                        className="w-full border-orange-200 dark:border-orange-700 focus:border-orange-400 focus:ring-orange-400/20"
                                         onChange={(e) => setData('due_date', e.target.value)}
+                                        className="w-full"
+                                        placeholder="Select task deadline..."
+                                        allowClear={true}
+                                        showToday={true}
+                                        todayLabel="Today"
+                                        clearLabel="Clear Date"
                                     />
                                     <InputError className="mt-2">{errors.due_date}</InputError>
                                 </div>

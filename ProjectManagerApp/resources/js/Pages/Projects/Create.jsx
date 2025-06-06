@@ -6,8 +6,8 @@ import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
-import SelectInput from "@/Components/SelectInput";
 import DynamicSelect from "@/Components/DynamicSelect";
+import DatePicker from "@/Components/DatePicker";
 import ActionButton from "@/Components/DataTables/ActionButton";
 
 import { 
@@ -198,14 +198,20 @@ export default function Create({ auth }) {
                                         <div className="space-y-2">
                                             <InputLabel htmlFor="due_date" value="Project Deadline" className="font-medium text-gray-900 dark:text-white" />
                                             <p className="text-xs text-orange-600 dark:text-orange-400 mb-2">Set the target completion date for this project</p>
-                                            <TextInput 
+                                            <DatePicker
                                                 id="due_date"
-                                                type="date"
                                                 name="due_date"
                                                 value={data.due_date}
-                                                className="mt-1 block w-full"
-                                                autoComplete="due_date"
                                                 onChange={(e) => setData('due_date', e.target.value)}
+                                                className="mt-1 block w-full"
+                                                placeholder="Select project deadline..."
+                                                allowClear={true}
+                                                showToday={true}
+                                                todayLabel="Today"
+                                                clearLabel="Clear Date"
+                                                yearRange={5}
+                                                minYear={2024}
+                                                maxYear={2030}
                                             />
                                             <InputError className="mt-2">{errors.due_date}</InputError>
                                         </div>
