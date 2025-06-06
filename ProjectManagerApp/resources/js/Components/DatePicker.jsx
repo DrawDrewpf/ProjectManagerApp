@@ -302,9 +302,8 @@ export default forwardRef(function DatePicker({
     ];
 
     const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];    return (
-        <div ref={datePickerRef} className={`relative ${className}`}>
-            {/* Custom Scrollbar Styles */}
-            <style jsx>{`
+        <div ref={datePickerRef} className={`relative ${className}`}>            {/* Custom Scrollbar Styles */}
+            <style>{`
                 .custom-scrollbar::-webkit-scrollbar {
                     width: 4px;
                 }
@@ -319,16 +318,13 @@ export default forwardRef(function DatePicker({
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                     background: rgba(59, 130, 246, 0.8);
                 }
-            `}</style>
-
-            {/* Date picker button */}
+            `}</style>            {/* Date picker button */}
             <button
                 type="button"
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 onKeyDown={handleKeyDown}
                 disabled={disabled}
                 className={baseButtonStyles}
-                {...props}
             >
                 <div className="flex items-center justify-between">
                     <div className="flex items-center min-w-0 flex-1">
@@ -348,19 +344,26 @@ export default forwardRef(function DatePicker({
                             )}
                         </div>
                     </div>
-                    
-                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2">
                         {allowClear && displayValue && (
-                            <button
-                                type="button"
+                            <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleClear();
                                 }}
-                                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleClear();
+                                    }
+                                }}
+                                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors cursor-pointer"
                             >
                                 <XMarkIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
-                            </button>
+                            </div>
                         )}
                         
                         <CalendarIcon className={`

@@ -167,13 +167,12 @@ export default function Edit({ auth, task, projects, users }) {
                                     <ImageUploaderPreview
                                         id="task_image"
                                         name="image"
-                                        currentImage={task?.image_path || '/images/default_task.png'}
+                                        currentImageUrl={task?.image_path || '/images/default_task.png'}
                                         currentImageAlt={`${task.name} task image`}
-                                        onFileChange={(file) => setData('image', file)}
-                                        onRemove={() => setData('image', null)}
+                                        onChange={(e) => setData('image', e.target.value)}
                                         error={errors.image}
-                                        accept="image/*"
-                                        maxSize={5}
+                                        acceptedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
+                                        maxSizeInMB={5}
                                         aspectRatio="square"
                                         showZoom={true}
                                         showRemove={false}

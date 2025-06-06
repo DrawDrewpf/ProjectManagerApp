@@ -64,17 +64,42 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        $data = $request->validated();
-        $image = $data['image'] ?? null;
-        $data['created_by'] = Auth::id();
-        $data['updated_by'] = Auth::id();
-        if ($image) {
-            $data['image_path'] = $image->store('task/' . Str::random(), 'public');
-        }
-        Task::create($data);
+        try {
+            $data = $request->validated();
+            $image = $data['image'] ?? null;
+            $data['created_by'] = Auth::id();
+            $data['updated_by'] = Auth::id();
+            
+            if ($image) {
+                // Validate image file size again for extra security
+                if ($image->getSize() > 5120 * 1024) { // 5MB in bytes
+                    return back()->withErrors([
+                        'image' => 'La imagen excede el límite de 5MB. Por favor, selecciona una imagen más pequeña.'
+                    ])->withInput();
+                }
+                
+                // Validate image type
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!in_array($image->getMimeType(), $allowedMimeTypes)) {
+                    return back()->withErrors([
+                        'image' => 'Tipo de archivo no válido. Solo se permiten imágenes JPG, PNG, GIF y WebP.'
+                    ])->withInput();
+                }
+                
+                $data['image_path'] = $image->store('task/' . Str::random(), 'public');
+            }
+            
+            Task::create($data);
 
-        return to_route('tasks.index')
-            ->with('success', 'Task created successfully.');
+            return to_route('tasks.index')
+                ->with('success', 'Task created successfully.');
+                
+        } catch (\Exception $e) {
+            \Log::error('Error uploading task image: ' . $e->getMessage());
+            return back()->withErrors([
+                'image' => 'Hubo un problema al subir la imagen. Por favor, inténtalo de nuevo.'
+            ])->withInput();
+        }
     }
 
     /**
@@ -102,21 +127,44 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        $data = $request->validated();
-        $image = $data['image'] ?? null;
-        $data['updated_by'] = Auth::id();
-        
-        if ($image) {
-            if ($task->image_path) {
-                Storage::disk('public')->delete($task->image_path);
+        try {
+            $data = $request->validated();
+            $image = $data['image'] ?? null;
+            $data['updated_by'] = Auth::id();
+            
+            if ($image) {
+                // Validate image file size again for extra security
+                if ($image->getSize() > 5120 * 1024) { // 5MB in bytes
+                    return back()->withErrors([
+                        'image' => 'La imagen excede el límite de 5MB. Por favor, selecciona una imagen más pequeña.'
+                    ])->withInput();
+                }
+                
+                // Validate image type
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!in_array($image->getMimeType(), $allowedMimeTypes)) {
+                    return back()->withErrors([
+                        'image' => 'Tipo de archivo no válido. Solo se permiten imágenes JPG, PNG, GIF y WebP.'
+                    ])->withInput();
+                }
+                
+                if ($task->image_path) {
+                    Storage::disk('public')->delete($task->image_path);
+                }
+                $data['image_path'] = $image->store('task/' . Str::random(), 'public');
             }
-            $data['image_path'] = $image->store('task/' . Str::random(), 'public');
-        }
-        
-        $task->update($data);
+            
+            $task->update($data);
 
-        return to_route('tasks.index')
-            ->with('success', 'Task updated successfully.');
+            return to_route('tasks.index')
+                ->with('success', 'Task updated successfully.');
+                
+        } catch (\Exception $e) {
+            \Log::error('Error updating task image: ' . $e->getMessage());
+            return back()->withErrors([
+                'image' => 'Hubo un problema al actualizar la imagen. Por favor, inténtalo de nuevo.'
+            ])->withInput();
+        }
     }
 
     /**

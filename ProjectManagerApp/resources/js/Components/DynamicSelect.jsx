@@ -478,17 +478,24 @@ export default forwardRef(function DynamicSelect({
                             </div>
                         )}
                         {selectedOption && !loading && (
-                            <button
-                                type="button"
+                            <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleSelect('');
                                 }}
-                                className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                                tabIndex={-1}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleSelect('');
+                                    }
+                                }}
+                                className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
                             >
                                 <XMarkIcon className="h-4 w-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
-                            </button>
+                            </div>
                         )}
                         <div className="p-1">
                             <ChevronDownIcon 
@@ -533,14 +540,21 @@ export default forwardRef(function DynamicSelect({
                     )}
                     
                     {/* Options with enhanced design */}
-                    <div className="max-h-72 overflow-auto custom-scrollbar">
+                    <div role="listbox" className="max-h-72 overflow-auto custom-scrollbar">
                         {/* Enhanced empty option */}
                         {allowEmpty && (
-                            <button
-                                type="button"
+                            <div
+                                role="option"
+                                tabIndex={0}
                                 onClick={() => handleSelect('')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleSelect('');
+                                    }
+                                }}
                                 className={`
-                                    w-full px-4 py-3 text-left transition-all duration-200 border-b border-gray-100 dark:border-gray-700
+                                    w-full px-4 py-3 text-left transition-all duration-200 border-b border-gray-100 dark:border-gray-700 cursor-pointer
                                     ${focusedIndex === -1 
                                         ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700' 
                                         : 'hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -557,7 +571,7 @@ export default forwardRef(function DynamicSelect({
                                         {emptyLabel}
                                     </span>
                                 </div>
-                            </button>
+                            </div>
                         )}                        
                         {/* Enhanced loading state */}
                         {loading && (
@@ -601,14 +615,21 @@ export default forwardRef(function DynamicSelect({
                             </div>
                         )}                        {/* Available options with enhanced design */}
                         {!loading && !error && filteredOptions.map((option, index) => (
-                            <button
+                            <div
                                 key={option.value}
-                                type="button"
+                                role="option"
+                                tabIndex={0}
                                 ref={el => optionsRefs.current[index] = el}
                                 onClick={() => handleSelect(option.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleSelect(option.value);
+                                    }
+                                }}
                                 onMouseEnter={() => setFocusedIndex(index)}
                                 className={`
-                                    w-full px-4 py-4 text-left transition-all duration-200 border-b border-gray-100 dark:border-gray-700 last:border-b-0
+                                    w-full px-4 py-4 text-left transition-all duration-200 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer
                                     ${focusedIndex === index 
                                         ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700' 
                                         : 'hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -653,7 +674,7 @@ export default forwardRef(function DynamicSelect({
                                         </div>
                                     )}
                                 </div>
-                            </button>
+                            </div>
                         ))}                    </div>
                 </div>
             )}

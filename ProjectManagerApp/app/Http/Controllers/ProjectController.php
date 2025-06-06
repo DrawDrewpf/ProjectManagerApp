@@ -59,18 +59,42 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        $data = $request->validated();
-        $image = $data ['image'] ?? null;
-        $data['created_by'] = Auth::id();
-        $data['updated_by'] = Auth::id();
-        if ($image) {
-            $data['image_path'] = $image->store('project/'.Str::random(), 'public');
+        try {
+            $data = $request->validated();
+            $image = $data ['image'] ?? null;
+            $data['created_by'] = Auth::id();
+            $data['updated_by'] = Auth::id();
+            
+            if ($image) {
+                // Validate image file size again for extra security
+                if ($image->getSize() > 5120 * 1024) { // 5MB in bytes
+                    return back()->withErrors([
+                        'image' => 'La imagen excede el límite de 5MB. Por favor, selecciona una imagen más pequeña.'
+                    ])->withInput();
+                }
+                
+                // Validate image type
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!in_array($image->getMimeType(), $allowedMimeTypes)) {
+                    return back()->withErrors([
+                        'image' => 'Tipo de archivo no válido. Solo se permiten imágenes JPG, PNG, GIF y WebP.'
+                    ])->withInput();
+                }
+                
+                $data['image_path'] = $image->store('project/'.Str::random(), 'public');
+            }
+            
+            Project::create ($data); 
+
+            return to_route('projects.index') 
+                -> with('success', 'Project created successfully.');
+                
+        } catch (\Exception $e) {
+            \Log::error('Error uploading project image: ' . $e->getMessage());
+            return back()->withErrors([
+                'image' => 'Hubo un problema al subir la imagen. Por favor, inténtalo de nuevo.'
+            ])->withInput();
         }
-        Project::create ($data); 
-
-        return to_route('projects.index') 
-        -> with('success', 'Project created successfully.');
-
     }
 
     /**
@@ -114,24 +138,47 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
 {
-    $data = $request->validated();
-    $name = $project->name;
-    
-    $image = $data['image'] ?? null;
-    $data['updated_by'] = Auth::id();
-    
-    if ($image) {
-        if ($project->image_path) {
-            Storage::disk('public')->delete($project->image_path);
+    try {
+        $data = $request->validated();
+        $name = $project->name;
+        
+        $image = $data['image'] ?? null;
+        $data['updated_by'] = Auth::id();
+        
+        if ($image) {
+            // Validate image file size again for extra security
+            if ($image->getSize() > 5120 * 1024) { // 5MB in bytes
+                return back()->withErrors([
+                    'image' => 'La imagen excede el límite de 5MB. Por favor, selecciona una imagen más pequeña.'
+                ])->withInput();
+            }
+            
+            // Validate image type
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!in_array($image->getMimeType(), $allowedMimeTypes)) {
+                return back()->withErrors([
+                    'image' => 'Tipo de archivo no válido. Solo se permiten imágenes JPG, PNG, GIF y WebP.'
+                ])->withInput();
+            }
+            
+            if ($project->image_path) {
+                Storage::disk('public')->delete($project->image_path);
+            }
+            $data['image_path'] = $image->store('project/'.Str::random(), 'public');
+        } else {
+            unset($data['image']);
         }
-        $data['image_path'] = $image->store('project/'.Str::random(), 'public');
-    } else {
-        unset($data['image']);
-    }
-    
-    $project->update($data);
+        
+        $project->update($data);
 
-    return to_route('projects.index')->with('success', "Project \"$name\" edited successfully.");
+        return to_route('projects.index')->with('success', "Project \"$name\" edited successfully.");
+        
+    } catch (\Exception $e) {
+        \Log::error('Error updating project image: ' . $e->getMessage());
+        return back()->withErrors([
+            'image' => 'Hubo un problema al actualizar la imagen. Por favor, inténtalo de nuevo.'
+        ])->withInput();
+    }
 }
 
     /**

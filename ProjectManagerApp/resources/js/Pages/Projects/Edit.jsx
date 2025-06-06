@@ -96,18 +96,16 @@ export default function Edit({ auth, project}) {
                                     <ImageUploaderPreview
                                         id="project_image"
                                         name="image"
-                                        currentImage={project?.image_path || '/images/default_project.png'}
+                                        currentImageUrl={project?.image_path || '/images/default_project.png'}
                                         currentImageAlt={`${project.name} project image`}
-                                        onFileChange={(file) => setData('image', file)}
-                                        onRemove={() => setData('image', null)}
+                                        onChange={(e) => setData('image', e.target.value)}
                                         error={errors.image}
-                                        accept="image/*"
-                                        maxSize={5}
+                                        acceptedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
+                                        maxSizeInMB={5}
                                         aspectRatio="landscape"
                                         showZoom={true}
-                                        showRemove={false}
                                         placeholder="Click to upload a new project image or drag and drop"
-                                        subtitle="PNG, JPG, GIF up to 5MB - Leave empty to keep current image"
+                                        description="PNG, JPG, GIF up to 5MB - Leave empty to keep current image"
                                         className="w-full"
                                     />
                                     

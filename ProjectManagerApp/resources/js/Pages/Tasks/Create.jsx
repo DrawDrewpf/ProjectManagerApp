@@ -151,16 +151,15 @@ export default function Create({ auth }) {
                                     <ImageUploaderPreview
                                         id="task_image"
                                         name="image"
-                                        onFileChange={(file) => setData('image', file)}
-                                        onRemove={() => setData('image', null)}
+                                        value={data.image}
+                                        onChange={(e) => setData('image', e.target.value)}
                                         error={errors.image}
-                                        accept="image/*"
-                                        maxSize={5}
+                                        acceptedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
+                                        maxSizeInMB={5}
                                         aspectRatio="square"
                                         showZoom={true}
-                                        showRemove={true}
                                         placeholder="Click to upload a task image or drag and drop"
-                                        subtitle="PNG, JPG, GIF up to 5MB"
+                                        description="PNG, JPG, GIF up to 5MB"
                                         className="w-full"
                                     />
                                 </div>
