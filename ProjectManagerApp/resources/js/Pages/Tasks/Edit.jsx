@@ -123,11 +123,11 @@ export default function Edit({ auth, task, projects, users }) {
                                     value={data.project_id}
                                     onChange={(e) => setData('project_id', e.target.value)}
                                     apiEndpoint="/api/projects"
-                                    placeholder="Selecciona un proyecto..."
+                                    placeholder="Select a project..."
                                     className="mt-1 block w-full"
                                     searchable={true}
                                     allowEmpty={true}
-                                    emptyLabel="Sin proyecto"
+                                    emptyLabel="No project"
                                 />
                                 <InputError className="mt-2">{errors.project_id}</InputError>
                             </div>
@@ -261,11 +261,11 @@ export default function Edit({ auth, task, projects, users }) {
                                         value={data.priority}
                                         onChange={(e) => setData('priority', e.target.value)}
                                         apiEndpoint="/api/priorities"
-                                        placeholder="Selecciona prioridad..."
+                                        placeholder="Select priority..."
                                         className="w-full"
                                         searchable={false}
                                         allowEmpty={true}
-                                        emptyLabel="Sin prioridad"
+                                        emptyLabel="No priority"
                                         showPriorityBadges={true}
                                         showIcons={true}
                                         priorityField="value"
@@ -291,11 +291,11 @@ export default function Edit({ auth, task, projects, users }) {
                                         onChange={(e) => setData('status', e.target.value)}
                                         apiEndpoint="/api/statuses"
                                         apiParams={{ type: 'task' }}
-                                        placeholder="Selecciona estado..."
+                                        placeholder="Select status..."
                                         className="w-full"
                                         searchable={false}
                                         allowEmpty={true}
-                                        emptyLabel="Sin estado"
+                                        emptyLabel="No status"
                                         showStatusBadges={true}
                                         showIcons={true}
                                         statusField="value"
@@ -321,11 +321,11 @@ export default function Edit({ auth, task, projects, users }) {
                                     value={data.assigned_user_id}
                                     onChange={(e) => setData('assigned_user_id', e.target.value)}
                                     apiEndpoint="/api/users"
-                                    placeholder="Buscar y asignar usuario..."
+                                    placeholder="Search and assign user..."
                                     className="w-full"
                                     searchable={true}
                                     allowEmpty={true}
-                                    emptyLabel="Sin asignar"
+                                    emptyLabel="Unassigned"
                                     minSearchLength={2}
                                     searchDelay={300}
                                 />

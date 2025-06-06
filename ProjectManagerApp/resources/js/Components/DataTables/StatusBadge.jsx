@@ -33,7 +33,7 @@ export default function StatusBadge({
         green: "bg-green-50 text-green-700 ring-green-600/20 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300 dark:ring-green-400/30 dark:hover:bg-green-900/50"
     };
     
-    // Status-specific mappings mejorados
+    // Enhanced status-specific mappings
     const statusVariants = {
         // Project/Task statuses
         'pending': 'warning',
@@ -45,7 +45,7 @@ export default function StatusBadge({
         'review': 'purple',
         'testing': 'orange',
         
-        // Priority levels expandidos
+        // Expanded priority levels
         'low': 'success',
         'medium': 'warning',
         'high': 'orange',

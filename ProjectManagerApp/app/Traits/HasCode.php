@@ -29,7 +29,7 @@ trait HasCode
             ->first();
         
         if ($lastRecord) {
-            // Extraer el número del último código
+            // Extract the number from the last code
             $lastNumber = (int) substr($lastRecord->code, strlen($prefix));
             $nextNumber = $lastNumber + 1;
         } else {
@@ -58,10 +58,8 @@ trait HasCode
     public static function findByCode($code)
     {
         return static::where('code', $code)->first();
-    }
-
-    /**
-     * Get route key name (para usar códigos en rutas en lugar de IDs)
+    }    /**
+     * Get route key name (to use codes in routes instead of IDs)
      */
     public function getRouteKeyName()
     {

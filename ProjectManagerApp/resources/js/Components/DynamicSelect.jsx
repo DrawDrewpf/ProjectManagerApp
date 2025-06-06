@@ -1,5 +1,5 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
-import { ChevronDownIcon, MagnifyingGlassIcon, ExclamationTriangleIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+
 import { 
     ClockIcon, 
     PlayIcon, 
@@ -8,11 +8,17 @@ import {
     ArrowUpIcon,
     MinusIcon,
     FlagIcon,
-    SparklesIcon
+    SparklesIcon,
+    ChevronDownIcon, 
+    MagnifyingGlassIcon, 
+    ExclamationTriangleIcon, 
+    CheckIcon, 
+    XMarkIcon 
 } from '@heroicons/react/24/solid';
+
 import StatusBadge from '@/Components/DataTables/StatusBadge';
 
-// Mapas de iconos para estados y prioridades (mantenemos los iconos para uso interno)
+// Icon maps for statuses and priorities (keeping icons for internal use)
 const STATUS_ICONS = {
     'pending': ClockIcon,
     'in_progress': PlayIcon,
@@ -27,7 +33,7 @@ const PRIORITY_ICONS = {
 };
 
 export default forwardRef(function DynamicSelect({
-    // Props básicas del select
+    // Basic select props
     id,
     name,
     value,
@@ -37,14 +43,14 @@ export default forwardRef(function DynamicSelect({
     disabled = false,
     required = false,
     
-    // Props para configurar la API
+    // Props to configure API
     apiEndpoint,
     apiParams = {},
     
-    // Props para configurar opciones estáticas
+    // Props to configure static options
     staticOptions = null,
     
-    // Props para personalizar la apariencia
+    // Props to customize appearance
     searchable = true,
     allowEmpty = true,
     emptyLabel = 'Select an option...',
@@ -52,18 +58,18 @@ export default forwardRef(function DynamicSelect({
     errorLabel = 'Error loading options',
     noResultsLabel = 'No options found',
     
-    // Props para personalizar el comportamiento
+    // Props to customize behavior
     minSearchLength = 0,
     searchDelay = 300,
     
-    // Props para mejorar visualización
+    // Props to improve visualization
     showStatusBadges = false,
     showPriorityBadges = false,
     showIcons = false,
     statusField = 'status',
     priorityField = 'priority',
     
-    // Props adicionales
+    // Additional props
     ...props
 }, ref) {
     
@@ -85,7 +91,7 @@ export default forwardRef(function DynamicSelect({
         blur: () => selectRef.current?.blur(),
         open: () => setIsOpen(true),
         close: () => setIsOpen(false),
-    }));    // Función para calcular la dirección del dropdown
+    }));    // Function to calculate dropdown direction
     const calculateDropDirection = () => {
         if (!selectRef.current) return 'down';
 
@@ -94,13 +100,13 @@ export default forwardRef(function DynamicSelect({
         const spaceBelow = viewportHeight - rect.bottom;
         const spaceAbove = rect.top;
         
-        // Estimar altura del dropdown basado en número de opciones
-        const searchHeight = searchable ? 64 : 0; // altura del campo de búsqueda
-        const optionHeight = 48; // altura estimada por opción
-        const maxOptions = Math.min(filteredOptions.length + (allowEmpty ? 1 : 0), 6); // máximo 6 opciones visibles
-        const estimatedDropdownHeight = searchHeight + (maxOptions * optionHeight) + 16; // padding adicional
+        // Estimate dropdown height based on number of options
+        const searchHeight = searchable ? 64 : 0; // search field height
+        const optionHeight = 48; // estimated height per option
+        const maxOptions = Math.min(filteredOptions.length + (allowEmpty ? 1 : 0), 6); // maximum 6 visible options
+        const estimatedDropdownHeight = searchHeight + (maxOptions * optionHeight) + 16; // additional padding
 
-        // Si hay más espacio arriba y no hay suficiente espacio abajo
+        // If there's more space above and not enough space below
         if (spaceAbove > spaceBelow && spaceBelow < estimatedDropdownHeight && spaceAbove >= estimatedDropdownHeight) {
             return 'up';
         }
@@ -108,12 +114,12 @@ export default forwardRef(function DynamicSelect({
         return 'down';
     };
 
-    // Verificar que tenemos las props necesarias
+    // Verify that we have necessary props
     useEffect(() => {
         if (!apiEndpoint && !staticOptions) {
             console.error('DynamicSelect: apiEndpoint or staticOptions is required');
         }
-    }, [apiEndpoint, staticOptions]);    // Función para obtener datos de la API o usar opciones estáticas
+    }, [apiEndpoint, staticOptions]);    
     const fetchOptions = async (searchQuery = '') => {
         if (staticOptions) {
             return staticOptions;
@@ -162,7 +168,7 @@ export default forwardRef(function DynamicSelect({
         } finally {
             setLoading(false);
         }
-    };    // Cargar opciones iniciales - simplificado
+    };    // Load initial options - simplified
     useEffect(() => {
         if (apiEndpoint && !hasLoaded) {
             fetchOptions().then(data => {
@@ -177,7 +183,7 @@ export default forwardRef(function DynamicSelect({
         }
     }, [apiEndpoint, staticOptions]);
 
-    // Resetear cuando cambia el endpoint
+    // Reset when endpoint changes
     useEffect(() => {
         if (apiEndpoint) {
             setHasLoaded(false);
@@ -185,17 +191,17 @@ export default forwardRef(function DynamicSelect({
             setFilteredOptions([]);
             setError(null);
         }
-    }, [apiEndpoint]);    // Manejar búsqueda con debounce - simplificado
+    }, [apiEndpoint]);    // Handle search with debounce - simplified
     useEffect(() => {
         const handler = setTimeout(() => {
             if (staticOptions) {
-                // Para opciones estáticas, filtrar localmente
+                // For static options, filter locally
                 const filtered = staticOptions.filter(option =>
                     option.label.toLowerCase().includes(searchTerm.toLowerCase())
                 );
                 setFilteredOptions(filtered);
             } else if (apiEndpoint) {
-                // Para API, buscar en servidor
+                // For API, search on server
                 if (searchTerm.length >= minSearchLength) {
                     fetchOptions(searchTerm).then(data => {
                         setFilteredOptions(data);
@@ -207,7 +213,7 @@ export default forwardRef(function DynamicSelect({
         }, searchDelay);
         
         return () => clearTimeout(handler);
-    }, [searchTerm, options, staticOptions, minSearchLength, searchDelay, apiEndpoint]);// Calcular dirección del dropdown cuando se abre o cambian las opciones
+    }, [searchTerm, options, staticOptions, minSearchLength, searchDelay, apiEndpoint]);// Calculate dropdown direction when opened or options change
     useEffect(() => {
         if (isOpen) {
             const direction = calculateDropDirection();
@@ -215,7 +221,7 @@ export default forwardRef(function DynamicSelect({
         }
     }, [isOpen, filteredOptions.length, searchable, allowEmpty]);
 
-    // Cerrar dropdown al hacer clic fuera
+    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -229,7 +235,7 @@ export default forwardRef(function DynamicSelect({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Manejar navegación con teclado
+    // Handle keyboard navigation
     const handleKeyDown = (e) => {
         switch (e.key) {
             case 'Enter':
@@ -279,16 +285,16 @@ export default forwardRef(function DynamicSelect({
                 }
                 break;
         }
-    };    // Obtener la opción seleccionada con mejor manejo de valores
+    };    // Get selected option with better value handling
     const selectedOption = options.find(option => {
-        // Normalizar valores para comparación
+        // Normalize values for comparison
         const optionValue = String(option.value || '');
         const currentValue = String(value || '');
         return optionValue === currentValue && currentValue !== '';
     });
-      // Manejar selección de opción - mejorado
+      // Handle option selection - improved
     const handleSelect = (optionValue) => {
-        // Normalizar el valor
+        // Normalize the value
         const normalizedValue = optionValue === null || optionValue === undefined ? '' : optionValue;
         
         onChange({ 
@@ -302,7 +308,7 @@ export default forwardRef(function DynamicSelect({
         setSearchTerm('');
         setFocusedIndex(-1);
         selectRef.current?.focus();
-    };// Auto focus en la opción seleccionada cuando se abre
+    };// Auto focus on selected option when opened
     useEffect(() => {
         if (isOpen && value && value !== '' && value !== null && value !== undefined && filteredOptions.length > 0) {
             const index = filteredOptions.findIndex(option => option.value == value);
@@ -310,7 +316,7 @@ export default forwardRef(function DynamicSelect({
                 setFocusedIndex(index);
             }
         }
-    }, [isOpen, value, filteredOptions]);    // Función para renderizar badge de estado usando el componente StatusBadge unificado
+    }, [isOpen, value, filteredOptions]);    // Function to render status badge using unified StatusBadge component
     const renderStatusBadge = (status) => {
         if (!showStatusBadges || !status) return null;
         
@@ -330,7 +336,7 @@ export default forwardRef(function DynamicSelect({
                 </div>
             </StatusBadge>
         );
-    };    // Función para renderizar badge de prioridad usando el componente StatusBadge unificado
+    };    // Function to render priority badge using unified StatusBadge component
     const renderPriorityBadge = (priority) => {
         if (!showPriorityBadges || !priority) return null;
         
@@ -350,34 +356,34 @@ export default forwardRef(function DynamicSelect({
                 </div>
             </StatusBadge>
         );
-    };// Función para renderizar iconos generales con mejor diseño
+    };// Function to render general icons with better design
     const renderOptionIcon = (option) => {
         if (!showIcons) return null;
         
-        // Si la opción tiene un ícono específico
+        // If the option has a specific icon
         if (option.icon) {
             return (
-                <div className="w-5 h-5 mr-3 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md">
+                <div className="w-5 h-5 mr-3 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-full">
                     <span className="w-3 h-3">{option.icon}</span>
                 </div>
             );
         }
         
-        // Íconos basados en el tipo de dato con mejor estilo
+        // Icons based on data type with better styling
         if (option[statusField]) {
             const Icon = STATUS_ICONS[option[statusField]];
             if (Icon) {
                 return (
-                    <div className="w-5 h-5 mr-3 flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 rounded-md">
+                    <div className="w-5 h-5 mr-3 flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 rounded-full">
                         <Icon className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                     </div>
                 );
             }
         }
         
-        // Ícono por defecto más elegante
+        // More elegant default icon
         return (
-            <div className="w-5 h-5 mr-3 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md">
+            <div className="w-5 h-5 mr-3 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-full">
                 <SparklesIcon className="w-3 h-3 text-gray-500 dark:text-gray-400" />
             </div>
         );
@@ -385,7 +391,7 @@ export default forwardRef(function DynamicSelect({
         relative w-full min-h-[3.5rem] px-4 py-3 text-left
         bg-white dark:bg-gray-900 
         border-2 border-gray-200 dark:border-gray-700
-        rounded-xl shadow-sm
+        rounded-full shadow-sm
         transition-all duration-200 ease-in-out
         focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500
         dark:focus:ring-blue-400/20 dark:focus:border-blue-400
@@ -409,7 +415,7 @@ export default forwardRef(function DynamicSelect({
 
     return (
         <div className="relative w-full" ref={dropdownRef}>
-            {/* Campo principal del select */}
+            {/* Main select field */}
             <button
                 ref={selectRef}
                 type="button"
@@ -426,10 +432,10 @@ export default forwardRef(function DynamicSelect({
             >                <div className="flex items-center justify-between min-h-[1.5rem]">
                     <div className="flex-1 min-w-0 pr-3">                        {selectedOption ? (
                             <div className="flex items-center">
-                                {/* Solo mostrar ícono si no hay badges habilitados */}
+                                {/* Only show icon if badges are not enabled */}
                                 {!(showStatusBadges || showPriorityBadges) && renderOptionIcon(selectedOption)}
                                 <div className="flex flex-col flex-1 min-w-0">                                    <div className="flex items-center flex-wrap gap-2">
-                                        {/* Solo mostrar texto si no hay badges habilitados */}
+                                        {/* Only show text if badges are not enabled */}
                                         {!(showStatusBadges || showPriorityBadges) && (
                                             <span className="font-semibold text-gray-900 dark:text-gray-100 truncate text-base">
                                                 {selectedOption.label}
@@ -440,7 +446,7 @@ export default forwardRef(function DynamicSelect({
                                             {renderPriorityBadge(selectedOption[priorityField])}
                                         </div>
                                     </div>
-                                    {/* Solo mostrar extra si no hay badges habilitados */}
+                                    {/* Only show extra if badges are not enabled */}
                                     {!(showStatusBadges || showPriorityBadges) && selectedOption.extra && (
                                         <span className="block truncate text-sm text-gray-600 dark:text-gray-400 mt-1 font-medium">
                                             {selectedOption.extra}
@@ -450,7 +456,7 @@ export default forwardRef(function DynamicSelect({
                             </div>
                         ) : (
                             <div className="flex items-center">
-                                <div className="w-5 h-5 mr-3 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md">
+                                <div className="w-5 h-5 mr-3 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-full">
                                     <SparklesIcon className="w-3 h-3 text-gray-400" />
                                 </div>
                                 <span className="block truncate text-gray-500 dark:text-gray-400 font-medium">
@@ -493,7 +499,7 @@ export default forwardRef(function DynamicSelect({
                         </div>
                     </div>
                 </div>
-            </button>            {/* Dropdown mejorado */}
+            </button>            {/* Enhanced dropdown */}
             {isOpen && (
                 <div className={`
                     absolute z-50 w-full bg-white dark:bg-gray-800 shadow-2xl border border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden backdrop-blur-sm
@@ -503,7 +509,7 @@ export default forwardRef(function DynamicSelect({
                     }
                     ring-1 ring-black ring-opacity-5 dark:ring-white dark:ring-opacity-10
                 `}>
-                    {/* Campo de búsqueda mejorado */}
+                    {/* Enhanced search field */}
                     {searchable && (
                         <div className="sticky top-0 bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-600">
                             <div className="relative">
@@ -526,9 +532,9 @@ export default forwardRef(function DynamicSelect({
                         </div>
                     )}
                     
-                    {/* Opciones con diseño mejorado */}
+                    {/* Options with enhanced design */}
                     <div className="max-h-72 overflow-auto custom-scrollbar">
-                        {/* Opción vacía mejorada */}
+                        {/* Enhanced empty option */}
                         {allowEmpty && (
                             <button
                                 type="button"
@@ -544,7 +550,7 @@ export default forwardRef(function DynamicSelect({
                                 onMouseEnter={() => setFocusedIndex(-1)}
                             >
                                 <div className="flex items-center">
-                                    <div className="w-5 h-5 mr-3 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md">
+                                    <div className="w-5 h-5 mr-3 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-full">
                                         <XMarkIcon className="w-3 h-3 text-gray-400" />
                                     </div>
                                     <span className="block italic text-sm font-medium">
@@ -553,7 +559,7 @@ export default forwardRef(function DynamicSelect({
                                 </div>
                             </button>
                         )}                        
-                        {/* Estado de carga mejorado */}
+                        {/* Enhanced loading state */}
                         {loading && (
                             <div className="px-6 py-4 text-gray-500 dark:text-gray-400">
                                 <div className="flex items-center justify-center">
@@ -563,7 +569,7 @@ export default forwardRef(function DynamicSelect({
                             </div>
                         )}
                         
-                        {/* Estado de error mejorado */}
+                        {/* Enhanced error state */}
                         {error && !loading && (
                             <div className="px-6 py-4 text-red-600 dark:text-red-400">
                                 <div className="flex items-center">
@@ -578,7 +584,7 @@ export default forwardRef(function DynamicSelect({
                             </div>
                         )}
                         
-                        {/* Sin resultados mejorado */}
+                        {/* Enhanced no results state */}
                         {!loading && !error && filteredOptions.length === 0 && (
                             <div className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                 <div className="flex flex-col items-center">
@@ -593,7 +599,7 @@ export default forwardRef(function DynamicSelect({
                                     )}
                                 </div>
                             </div>
-                        )}                        {/* Opciones disponibles con diseño mejorado */}
+                        )}                        {/* Available options with enhanced design */}
                         {!loading && !error && filteredOptions.map((option, index) => (
                             <button
                                 key={option.value}
@@ -614,11 +620,11 @@ export default forwardRef(function DynamicSelect({
                                 `}
                             >                                <div className="flex items-center justify-between">
                                     <div className="flex items-center flex-1 min-w-0 space-x-3">
-                                        {/* Solo mostrar ícono si no hay badges habilitados */}
+                                        {/* Only show icon if badges are not enabled */}
                                         {!(showStatusBadges || showPriorityBadges) && renderOptionIcon(option)}
                                         <div className="flex flex-col flex-1 min-w-0">
                                             <div className="flex items-center flex-wrap gap-2 mb-1">
-                                                {/* Solo mostrar texto si no hay badges habilitados */}
+                                                {/* Only show text if badges are not enabled */}
                                                 {!(showStatusBadges || showPriorityBadges) && (
                                                     <span className={`text-sm truncate ${
                                                         option.value == value ? 'font-bold' : 'font-semibold'
@@ -631,7 +637,7 @@ export default forwardRef(function DynamicSelect({
                                                     {renderPriorityBadge(option[priorityField])}
                                                 </div>
                                             </div>
-                                            {/* Solo mostrar extra si no hay badges habilitados */}
+                                            {/* Only show extra if badges are not enabled */}
                                             {!(showStatusBadges || showPriorityBadges) && option.extra && (
                                                 <span className="block truncate text-xs text-gray-600 dark:text-gray-400 mt-1 font-medium">
                                                     {option.extra}
@@ -640,7 +646,7 @@ export default forwardRef(function DynamicSelect({
                                         </div>
                                     </div>
                                     
-                                    {/* Checkmark para opción seleccionada mejorado */}
+                                    {/* Enhanced checkmark for selected option */}
                                     {option.value == value && (
                                         <div className="p-1 bg-blue-100 dark:bg-blue-900/50 rounded-full ml-3">
                                             <CheckIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -652,7 +658,7 @@ export default forwardRef(function DynamicSelect({
                 </div>
             )}
             
-            {/* Estilos para scrollbar personalizado */}
+            {/* Styles for custom scrollbar */}
             <style dangerouslySetInnerHTML={{
                 __html: `
                     .custom-scrollbar::-webkit-scrollbar {

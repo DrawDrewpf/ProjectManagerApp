@@ -98,11 +98,11 @@ export default function Create({ auth }) {
                                     value={data.project_id}
                                     onChange={(e) => setData('project_id', e.target.value)}
                                     apiEndpoint="/api/projects"
-                                    placeholder="Selecciona un proyecto..."
+                                    placeholder="Select a project..."
                                     className="w-full"
                                     searchable={true}
                                     allowEmpty={true}
-                                    emptyLabel="Sin proyecto"
+                                    emptyLabel="No project"
                                 />
                                 <InputError className="mt-2">{errors.project_id}</InputError>
                             </div>
@@ -205,11 +205,11 @@ export default function Create({ auth }) {
                                         value={data.priority}
                                         onChange={(e) => setData('priority', e.target.value)}
                                         apiEndpoint="/api/priorities"
-                                        placeholder="Selecciona prioridad..."
+                                        placeholder="Select priority..."
                                         className="w-full"
                                         searchable={false}
                                         allowEmpty={true}
-                                        emptyLabel="Sin prioridad"
+                                        emptyLabel="No priority"
                                         showPriorityBadges={true}
                                         showIcons={true}
                                         priorityField="value"
@@ -237,9 +237,9 @@ export default function Create({ auth }) {
                                         onChange={(e) => setData('status', e.target.value)}
                                         className="w-full"
                                         searchable={false}
-                                        placeholder="Selecciona estado..."
+                                        placeholder="Select status..."
                                         allowEmpty={true}
-                                        emptyLabel="Sin estado"
+                                        emptyLabel="No status"
                                         showStatusBadges={true}
                                         showIcons={true}
                                         statusField="value"
@@ -263,12 +263,12 @@ export default function Create({ auth }) {
                                     id="assigned_user_id"
                                     name="assigned_user_id"
                                     apiEndpoint="/api/users"
-                                    placeholder="Buscar y asignar usuario..."
+                                    placeholder="Search and assign user..."
                                     value={data.assigned_user_id}
                                     onChange={(e) => setData('assigned_user_id', e.target.value)}
                                     searchable={true}
                                     allowEmpty={true}
-                                    emptyLabel="Sin asignar"
+                                    emptyLabel="Unassigned"
                                     className="w-full"
                                 />
                                 <InputError className="mt-2">{errors.assigned_user_id}</InputError>

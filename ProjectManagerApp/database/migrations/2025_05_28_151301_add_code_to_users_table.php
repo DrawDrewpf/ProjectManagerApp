@@ -16,14 +16,14 @@ return new class extends Migration
             $table->string('code')->nullable()->after('id');
         });
 
-        // Generar códigos para registros existentes
+        // Generate codes for existing records
         $users = User::all();
         foreach ($users as $index => $user) {
             $user->code = 'USR-' . str_pad($index + 1, 3, '0', STR_PAD_LEFT);
             $user->save();
         }
 
-        // Hacer el campo unique y not null
+        // Make field unique and not null
         Schema::table('users', function (Blueprint $table) {
             $table->string('code')->unique()->nullable(false)->change();
         });

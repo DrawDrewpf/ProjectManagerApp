@@ -38,9 +38,8 @@ export default function TestToasts({ auth }) {
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             <div className="space-y-8">
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-4">Server-side Toasts (Laravel Flash Messages)</h3>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                                        Estos toasts se generan desde el backend usando Laravel flash messages y se muestran automáticamente.
+                                    <h3 className="text-lg font-semibold mb-4">Server-side Toasts (Laravel Flash Messages)</h3>                                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                        These toasts are generated from the backend using Laravel flash messages and are displayed automatically.
                                     </p>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         <PrimaryButton
@@ -71,9 +70,8 @@ export default function TestToasts({ auth }) {
                                 </div>
 
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-4">Client-side Toasts (React Context)</h3>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                                        Estos toasts se generan directamente desde React usando el ToastContext.
+                                    <h3 className="text-lg font-semibold mb-4">Client-side Toasts (React Context)</h3>                                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                        These toasts are generated directly from React using the ToastContext.
                                     </p>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         <PrimaryButton
@@ -104,16 +102,15 @@ export default function TestToasts({ auth }) {
                                 </div>
 
                                 <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                                    <h4 className="font-semibold mb-2">Features:</h4>
-                                    <ul className="text-sm space-y-1 list-disc list-inside">
-                                        <li>Diferentes colores e iconos para cada tipo de mensaje</li>
-                                        <li>Gradientes de fondo con bordes de acento</li>
-                                        <li>Iconos sólidos de Heroicons</li>
-                                        <li>Auto-desaparición después de 5 segundos</li>
-                                        <li>Prevención de duplicados</li>
-                                        <li>Animaciones suaves de entrada y salida</li>
-                                        <li>Botón de cierre manual</li>
-                                        <li>Soporte para modo oscuro</li>
+                                    <h4 className="font-semibold mb-2">Features:</h4>                                    <ul className="text-sm space-y-1 list-disc list-inside">
+                                        <li>Different colors and icons for each message type</li>
+                                        <li>Background gradients with accent borders</li>
+                                        <li>Solid Heroicons icons</li>
+                                        <li>Auto-disappear after 5 seconds</li>
+                                        <li>Duplicate prevention</li>
+                                        <li>Smooth enter and exit animations</li>
+                                        <li>Manual close button</li>
+                                        <li>Dark mode support</li>
                                     </ul>
                                 </div>
                             </div>

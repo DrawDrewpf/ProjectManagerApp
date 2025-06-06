@@ -148,7 +148,7 @@ export default function Create({ auth }) {
                                                 apiParams={{ type: 'project' }}
                                                 value={data.status}
                                                 onChange={(e) => setData('status', e.target.value)}
-                                                className="mt-1 block w-full"
+                                                className="mt-1 block w-full "
                                                 searchable={false}
                                                 placeholder="Select project status..."
                                                 showStatusBadges={true}

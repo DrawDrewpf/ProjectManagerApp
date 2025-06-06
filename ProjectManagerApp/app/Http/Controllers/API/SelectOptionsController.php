@@ -9,13 +9,13 @@ use Illuminate\Http\Request;
 
 class SelectOptionsController extends Controller
 {    /**
-     * Obtener usuarios para select
+     * Get users for select
      */
     public function users(Request $request)
     {
         $query = User::query();
         
-        // Búsqueda opcional
+        // Optional search
         if ($request->filled('search')) {
             $search = $request->get('search');
             $query->where(function($q) use ($search) {
@@ -41,19 +41,19 @@ class SelectOptionsController extends Controller
     }
     
     /**
-     * Obtener proyectos para select
+     * Get projects for select
      */
     public function projects(Request $request)
     {
         $query = Project::query();
         
-        // Búsqueda opcional
+        // Optional search
         if ($request->filled('search')) {
             $search = $request->get('search');
             $query->where('name', 'like', "%{$search}%");
         }
         
-        // Filtro por estado si se especifica
+        // Filter by status if specified
         if ($request->filled('status')) {
             $query->where('status', $request->get('status'));
         }
@@ -75,7 +75,7 @@ class SelectOptionsController extends Controller
     }
     
     /**
-     * Obtener prioridades para select
+     * Get priorities for select
      */
     public function priorities(Request $request)
     {
@@ -86,7 +86,7 @@ class SelectOptionsController extends Controller
             ['value' => 'extreme', 'label' => 'Extreme', 'extra' => 'red'],
         ];
         
-        // Filtro opcional por búsqueda
+        // Optional search filter
         if ($request->filled('search')) {
             $search = strtolower($request->get('search'));
             $priorities = array_filter($priorities, function($priority) use ($search) {
@@ -99,7 +99,7 @@ class SelectOptionsController extends Controller
             'data' => array_values($priorities)
         ]);
     }    /**
-     * Obtener estados para select
+     * Get statuses for select
      */
     public function statuses(Request $request)
     {
@@ -121,7 +121,7 @@ class SelectOptionsController extends Controller
             ];
         }
         
-        // Filtro opcional por búsqueda
+        // Optional search filter
         if ($request->filled('search')) {
             $search = strtolower($request->get('search'));
             $statuses = array_filter($statuses, function($status) use ($search) {
