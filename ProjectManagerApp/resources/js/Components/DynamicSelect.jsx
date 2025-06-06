@@ -653,27 +653,29 @@ export default forwardRef(function DynamicSelect({
             )}
             
             {/* Estilos para scrollbar personalizado */}
-            <style jsx>{`
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 6px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background-color: rgba(156, 163, 175, 0.5);
-                    border-radius: 3px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background-color: rgba(156, 163, 175, 0.8);
-                }
-                .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background-color: rgba(75, 85, 99, 0.5);
-                }
-                .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background-color: rgba(75, 85, 99, 0.8);
-                }
-            `}</style>
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                    .custom-scrollbar::-webkit-scrollbar {
+                        width: 6px;
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-track {
+                        background: transparent;
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-thumb {
+                        background-color: rgba(156, 163, 175, 0.5);
+                        border-radius: 3px;
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                        background-color: rgba(156, 163, 175, 0.8);
+                    }
+                    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+                        background-color: rgba(75, 85, 99, 0.5);
+                    }
+                    .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                        background-color: rgba(75, 85, 99, 0.8);
+                    }
+                `
+            }} />
         </div>
     );
 });
