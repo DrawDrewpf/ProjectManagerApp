@@ -8,6 +8,7 @@ import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
 import DynamicSelect from "@/Components/DynamicSelect";
 import DatePicker from "@/Components/DatePicker";
+import ImageUploaderPreview from "@/Components/ImageUploaderPreview";
 import ActionButton from "@/Components/DataTables/ActionButton";
 
 import { 
@@ -91,17 +92,21 @@ export default function Create({ auth }) {
                                             </p>
                                         </div>
                                     </div>
-                                    <div>
-                                        <InputLabel htmlFor="project_image_path" value="Choose Project Image" className="font-medium text-gray-900 dark:text-white" />
-                                        <TextInput 
-                                            id="project_image_path"
-                                            type="file"
-                                            name="project_image_path"
-                                            className="mt-2 block w-full"
-                                            onChange={(e) => setData('image', e.target.files[0])}
-                                        />
-                                        <InputError className="mt-2">{errors.image}</InputError>
-                                    </div>
+                                    
+                                    <ImageUploaderPreview
+                                        id="project_image_path"
+                                        name="image"
+                                        value={data.image}
+                                        onChange={(e) => setData('image', e.target.value || e.target.files[0])}
+                                        label="Project Image"
+                                        description="Upload a visual representation of your project (JPG, PNG, GIF, WebP - Max 5MB)"
+                                        placeholder="Click to upload project image"
+                                        aspectRatio="landscape"
+                                        error={errors.image}
+                                        maxSizeInMB={5}
+                                        acceptedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
+                                        showZoom={true}
+                                    />
                                 </div>
 
                                 {/* Basic Information Section */}
@@ -134,6 +139,7 @@ export default function Create({ auth }) {
                                                 isFocused={true}
                                                 onChange={(e) => setData('name', e.target.value)}
                                                 placeholder="Enter project name"
+                                                error={errors.name}
                                             />
                                             <InputError className="mt-2">{errors.name}</InputError>
                                         </div>
@@ -172,6 +178,7 @@ export default function Create({ auth }) {
                                                 onChange={(e) => setData('description', e.target.value)}
                                                 placeholder="Describe the project objectives, scope, and requirements..."
                                                 rows={4}
+                                                error={errors.description}
                                             />
                                             <InputError className="mt-2">{errors.description}</InputError>
                                         </div>

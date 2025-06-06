@@ -8,6 +8,7 @@ import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
 import DynamicSelect from "@/Components/DynamicSelect";
 import DatePicker from "@/Components/DatePicker";
+import ImageUploaderPreview from "@/Components/ImageUploaderPreview";
 import ActionButton from "@/Components/DataTables/ActionButton";
 
 import { 
@@ -75,7 +76,7 @@ export default function Edit({ auth, project}) {
                         
                         <form onSubmit={onSubmit} className="p-6">
                             <div className="space-y-8">
-                                {/* Current Image Preview */}
+                                {/* Project Image Upload */}
                                 <div className="relative bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-900/20 dark:via-teal-800/20 dark:to-cyan-900/20 rounded-xl p-6 border border-emerald-200/50 dark:border-emerald-700/50 shadow-sm">
                                     <div className="absolute top-4 right-4 w-8 h-8 bg-emerald-500/10 dark:bg-emerald-400/10 rounded-full flex items-center justify-center">
                                         <PhotoIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -87,33 +88,33 @@ export default function Edit({ auth, project}) {
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Project Image</h4>
                                             <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-0.5">
-                                                Current image and upload new one if needed
+                                                Upload a new image or keep the current one
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="mb-6">
-                                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Current Image:</p>
-                                        <div className="w-full max-w-md">
-                                            <img
-                                                src={project?.image_path || '/images/default_project.png'}
-                                                alt={project.name}
-                                                className="w-full h-48 object-cover rounded-lg shadow-md border border-emerald-200 dark:border-emerald-600"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <InputLabel htmlFor="project_image_path" value="Upload New Image (optional)" className="font-medium text-gray-900 dark:text-white" />
-                                        <TextInput 
-                                            id="project_image_path"
-                                            type="file"
-                                            name="image"
-                                            className="mt-1 block w-full"
-                                            onChange={(e) => setData('image', e.target.files[0])}
-                                        />
-                                        <p className="mt-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg px-3 py-2">
-                                            💡 Leave empty to keep current image
+                                    
+                                    <ImageUploaderPreview
+                                        id="project_image"
+                                        name="image"
+                                        currentImage={project?.image_path || '/images/default_project.png'}
+                                        currentImageAlt={`${project.name} project image`}
+                                        onFileChange={(file) => setData('image', file)}
+                                        onRemove={() => setData('image', null)}
+                                        error={errors.image}
+                                        accept="image/*"
+                                        maxSize={5}
+                                        aspectRatio="landscape"
+                                        showZoom={true}
+                                        showRemove={false}
+                                        placeholder="Click to upload a new project image or drag and drop"
+                                        subtitle="PNG, JPG, GIF up to 5MB - Leave empty to keep current image"
+                                        className="w-full"
+                                    />
+                                    
+                                    <div className="mt-4">
+                                        <p className="text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg px-3 py-2">
+                                            💡 Upload a new image to replace the current one, or leave empty to keep the existing image
                                         </p>
-                                        <InputError className="mt-2">{errors.image}</InputError>
                                     </div>
                                 </div>
 
@@ -147,6 +148,7 @@ export default function Edit({ auth, project}) {
                                                 isFocused={true}
                                                 onChange={(e) => setData('name', e.target.value)}
                                                 placeholder="Enter project name"
+                                                error={errors.name}
                                             />
                                             <InputError className="mt-2">{errors.name}</InputError>
                                         </div>
@@ -185,6 +187,7 @@ export default function Edit({ auth, project}) {
                                                 onChange={(e) => setData('description', e.target.value)}
                                                 placeholder="Describe the project objectives, scope, and requirements..."
                                                 rows={4}
+                                                error={errors.description}
                                             />
                                             <InputError className="mt-2">{errors.description}</InputError>
                                         </div>

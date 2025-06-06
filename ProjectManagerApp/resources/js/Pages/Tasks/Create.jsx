@@ -8,6 +8,7 @@ import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
 import DynamicSelect from "@/Components/DynamicSelect";
 import DatePicker from "@/Components/DatePicker";
+import ImageUploaderPreview from "@/Components/ImageUploaderPreview";
 import ActionButton from "@/Components/DataTables/ActionButton";
 
 import { 
@@ -108,28 +109,17 @@ export default function Create({ auth }) {
                             </div>
 
                             {/* Basic Information */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Task Image */}
-                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                    <div className="flex items-center mb-3">
-                                        <PhotoIcon className="w-5 h-5 text-emerald-500 mr-2" />
-                                        <InputLabel htmlFor="task_image_path" value="Task Image" className="font-medium" />
-                                    </div>
-                                    <TextInput 
-                                        id="task_image_path"
-                                        type="file"
-                                        name="task_image_path"
-                                        className="mt-1 block w-full"
-                                        onChange={(e) => setData('image', e.target.files[0])}
-                                    />
-                                    <InputError className="mt-2">{errors.image}</InputError>
-                                </div>
-
+                            <div className="space-y-6">
                                 {/* Task Name */}
-                                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                    <div className="flex items-center mb-3">
-                                        <DocumentTextIcon className="w-5 h-5 text-purple-500 mr-2" />
-                                        <InputLabel htmlFor="name" value="Task Name" className="font-medium" />
+                                <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
+                                    <div className="flex items-center mb-4">
+                                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg mr-3">
+                                            <DocumentTextIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                                        </div>
+                                        <div>
+                                            <InputLabel htmlFor="name" value="Task Name" className="font-semibold text-gray-900 dark:text-white" />
+                                            <p className="text-xs text-purple-600 dark:text-purple-400 mt-0.5">A clear, descriptive task name</p>
+                                        </div>
                                     </div>
                                     <TextInput 
                                         id="name"
@@ -141,8 +131,38 @@ export default function Create({ auth }) {
                                         isFocused={true}
                                         onChange={(e) => setData('name', e.target.value)}
                                         placeholder="Enter task name..."
+                                        error={errors.name}
                                     />
                                     <InputError className="mt-2">{errors.name}</InputError>
+                                </div>
+
+                                {/* Task Image */}
+                                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-6 border border-emerald-200 dark:border-emerald-800">
+                                    <div className="flex items-center mb-4">
+                                        <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg mr-3">
+                                            <PhotoIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                                        </div>
+                                        <div>
+                                            <InputLabel htmlFor="task_image" value="Task Image" className="font-semibold text-gray-900 dark:text-white" />
+                                            <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">Upload a visual representation of this task</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <ImageUploaderPreview
+                                        id="task_image"
+                                        name="image"
+                                        onFileChange={(file) => setData('image', file)}
+                                        onRemove={() => setData('image', null)}
+                                        error={errors.image}
+                                        accept="image/*"
+                                        maxSize={5}
+                                        aspectRatio="square"
+                                        showZoom={true}
+                                        showRemove={true}
+                                        placeholder="Click to upload a task image or drag and drop"
+                                        subtitle="PNG, JPG, GIF up to 5MB"
+                                        className="w-full"
+                                    />
                                 </div>
                             </div>
 

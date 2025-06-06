@@ -8,6 +8,7 @@ import TextInput from "@/Components/TextInput";
 import TextAreaInput from "@/Components/TextAreaInput";
 import DynamicSelect from "@/Components/DynamicSelect";
 import DatePicker from "@/Components/DatePicker";
+import ImageUploaderPreview from "@/Components/ImageUploaderPreview";
 import ActionButton from "@/Components/DataTables/ActionButton";
 
 import { 
@@ -83,23 +84,6 @@ export default function Edit({ auth, task, projects, users }) {
                             </div>
                         </div>
 
-                        {/* Current Task Image Preview */}
-                        {task.image_path && (
-                            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                                <div className="flex items-center space-x-4">
-                                    <h4 className="text-sm font-medium text-gray-900 dark:text-white">Current Image:</h4>
-                                    <div className="w-20 h-20 rounded-lg overflow-hidden shadow-md bg-gray-100 dark:bg-gray-700">
-                                        <img
-                                            src={task.image_path}
-                                            alt={task.name}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Form */}
                         <form onSubmit={onSubmit} className="p-6 space-y-6">
                             {/* Project Selection */}
                             <div className="relative bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-50 dark:from-blue-900/20 dark:via-blue-800/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200/50 dark:border-blue-700/50 shadow-sm">
@@ -133,36 +117,7 @@ export default function Edit({ auth, task, projects, users }) {
                             </div>
 
                             {/* Basic Information */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Task Image */}
-                                <div className="relative bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-900/20 dark:via-teal-800/20 dark:to-cyan-900/20 rounded-xl p-6 border border-emerald-200/50 dark:border-emerald-700/50 shadow-sm">
-                                    <div className="absolute top-4 right-4 w-8 h-8 bg-emerald-500/10 dark:bg-emerald-400/10 rounded-full flex items-center justify-center">
-                                        <PhotoIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                    </div>
-                                    <div className="flex items-center mb-4">
-                                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
-                                            <PhotoIcon className="w-5 h-5 text-white" />
-                                        </div>
-                                        <div>
-                                            <InputLabel htmlFor="task_image_path" value="Update Task Image" className="font-semibold text-gray-900 dark:text-white text-base" />
-                                            <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-0.5">
-                                                Upload a new image for this task
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <TextInput 
-                                        id="task_image_path"
-                                        type="file"
-                                        name="task_image_path"
-                                        className="mt-1 block w-full"
-                                        onChange={(e) => setData('image', e.target.files[0])}
-                                    />
-                                    <p className="mt-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg px-3 py-2">
-                                        💡 Leave empty to keep current image
-                                    </p>
-                                    <InputError className="mt-2">{errors.image}</InputError>
-                                </div>
-
+                            <div className="space-y-6">
                                 {/* Task Name */}
                                 <div className="relative bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 dark:from-purple-900/20 dark:via-violet-800/20 dark:to-indigo-900/20 rounded-xl p-6 border border-purple-200/50 dark:border-purple-700/50 shadow-sm">
                                     <div className="absolute top-4 right-4 w-8 h-8 bg-purple-500/10 dark:bg-purple-400/10 rounded-full flex items-center justify-center">
@@ -187,8 +142,51 @@ export default function Edit({ auth, task, projects, users }) {
                                         className="mt-1 block w-full"
                                         onChange={(e) => setData('name', e.target.value)}
                                         placeholder="Enter task name..."
+                                        error={errors.name}
                                     />
                                     <InputError className="mt-2">{errors.name}</InputError>
+                                </div>
+
+                                {/* Task Image */}
+                                <div className="relative bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-900/20 dark:via-teal-800/20 dark:to-cyan-900/20 rounded-xl p-6 border border-emerald-200/50 dark:border-emerald-700/50 shadow-sm">
+                                    <div className="absolute top-4 right-4 w-8 h-8 bg-emerald-500/10 dark:bg-emerald-400/10 rounded-full flex items-center justify-center">
+                                        <PhotoIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                    <div className="flex items-center mb-4">
+                                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
+                                            <PhotoIcon className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Task Image</h4>
+                                            <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-0.5">
+                                                Upload a new image or keep the current one
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <ImageUploaderPreview
+                                        id="task_image"
+                                        name="image"
+                                        currentImage={task?.image_path || '/images/default_task.png'}
+                                        currentImageAlt={`${task.name} task image`}
+                                        onFileChange={(file) => setData('image', file)}
+                                        onRemove={() => setData('image', null)}
+                                        error={errors.image}
+                                        accept="image/*"
+                                        maxSize={5}
+                                        aspectRatio="square"
+                                        showZoom={true}
+                                        showRemove={false}
+                                        placeholder="Click to upload a new task image or drag and drop"
+                                        subtitle="PNG, JPG, GIF up to 5MB - Leave empty to keep current image"
+                                        className="w-full"
+                                    />
+                                    
+                                    <div className="mt-4">
+                                        <p className="text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg px-3 py-2">
+                                            💡 Upload a new image to replace the current one, or leave empty to keep the existing image
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
