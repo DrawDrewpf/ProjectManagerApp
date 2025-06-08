@@ -25,6 +25,13 @@ class User extends Authenticatable
         'code',
         'email',
         'password',
+        'avatar_path',
+        'phone',
+        'bio',
+        'position',
+        'department',
+        'status',
+        'timezone',
     ];
 
     /**
@@ -47,6 +54,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_login_at' => 'datetime',
         ];
     }
 
@@ -89,4 +97,78 @@ class User extends Authenticatable
     {
         return $this->hasMany(Project::class, 'updated_by');
     }
+
+    /**
+     * Get the user's avatar URL
+     */
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar_path) {
+            return asset('storage/' . $this->avatar_path);
+        }
+        
+        // Return default avatar based on user initials
+        return $this->getDefaultAvatarUrl();
+    }
+
+    /**
+     * Get default avatar URL with initials
+     */
+    public function getDefaultAvatarUrl()
+    {
+        $initials = strtoupper(substr($this->name, 0, 1));
+        if (strpos($this->name, ' ') !== false) {
+            $nameParts = explode(' ', $this->name);
+            $initials = strtoupper(substr($nameParts[0], 0, 1) . substr(end($nameParts), 0, 1));
+        }
+        
+        // Using UI Avatars service for default avatars
+        return "https://ui-avatars.com/api/?name=" . urlencode($initials) . "&background=3b82f6&color=ffffff&size=200";
+    }
+
+    /**
+     * Get user's full display name with position
+     */
+    public function getDisplayNameAttribute()
+    {
+        return $this->position ? $this->name . ' (' . $this->position . ')' : $this->name;
+    }
+
+    /**
+     * Check if user is active
+     */
+    public function isActive()
+    {
+        return $this->status === 'active';
+    }
+
+    /**
+     * Get user's task statistics
+     */
+    public function getTaskStats()
+    {
+        return [
+            'total' => $this->tasks()->count(),
+            'pending' => $this->tasks()->where('status', 'pending')->count(),
+            'in_progress' => $this->tasks()->where('status', 'in_progress')->count(),
+            'completed' => $this->tasks()->where('status', 'completed')->count(),
+        ];
+    }
+
+    /**
+     * Update last login timestamp
+     */
+    public function updateLastLogin()
+    {
+        $this->update(['last_login_at' => now()]);
+    }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
+
 }

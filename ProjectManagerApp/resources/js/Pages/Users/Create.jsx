@@ -1,181 +1,367 @@
-import { Head, useForm, Link } from "@inertiajs/react";
-
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-
-import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
-import TextInput from "@/Components/TextInput";
-import ActionButton from "@/Components/DataTables/ActionButton";
-
+import { Head, Link, useForm } from '@inertiajs/react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import PrimaryButton from '@/Components/PrimaryButton';
+import TextInput from '@/Components/TextInput';
+import DynamicSelect from '@/Components/DynamicSelect';
+import ImageUploaderPreview from '@/Components/ImageUploaderPreview';
 import { 
     ArrowLeftIcon, 
-    UserPlusIcon, 
-    EnvelopeIcon, 
+    UserIcon, 
+    BriefcaseIcon, 
     LockClosedIcon,
-    UserIcon,
-    XMarkIcon
-} from "@heroicons/react/24/outline";
+    IdentificationIcon,
+    EnvelopeIcon,
+    PhoneIcon,
+    DocumentTextIcon
+} from '@heroicons/react/24/outline';
 
 export default function Create({ auth }) {
-
-    const { data, setData, post, errors, reset } = useForm({
+    const { data, setData, post, errors, processing, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
-    })
+        phone: '',
+        bio: '',
+        position: '',
+        department: '',
+        role: 'user',
+        status: 'active',
+        timezone: 'UTC',
+        avatar: null,
+    });
 
     const onSubmit = (e) => {
         e.preventDefault();
-        post(route('users.store'), {
-            data,
-            onSuccess: () => reset(),
-            onError: () => console.log(errors),
+        
+        // Create FormData for file upload
+        const formData = new FormData();
+        
+        // Append all form data
+        Object.keys(data).forEach(key => {
+            if (data[key] !== null && data[key] !== '' && data[key] !== undefined) {
+                formData.append(key, data[key]);
+            }
         });
-    }
+
+        post(route('users.store'), {
+            data: formData,
+            forceFormData: true,
+            onSuccess: () => reset(),
+        });
+    };
+
+    // Static options for roles (since these are system-defined)
+    const roles = [
+        { value: 'admin', label: 'Administrator', extra: 'Full system access' },
+        { value: 'manager', label: 'Manager', extra: 'Team management' },
+        { value: 'user', label: 'User', extra: 'Standard access' },
+    ];
+
+    const timezones = [
+        { value: 'UTC', label: 'UTC' },
+        { value: 'America/New_York', label: 'Eastern Time (US)' },
+        { value: 'America/Los_Angeles', label: 'Pacific Time (US)' },
+        { value: 'Europe/London', label: 'London' },
+        { value: 'Europe/Madrid', label: 'Madrid' },
+        { value: 'Asia/Tokyo', label: 'Tokyo' },
+    ];
 
     return (
         <AuthenticatedLayout
-            user={auth.user}
             header={
                 <div className="flex items-center space-x-4">
                     <Link 
-                        href={route('users.index')}
-                        className="flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                        href={route('users.index')} 
+                        className="inline-flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
                     >
                         <ArrowLeftIcon className="w-5 h-5 mr-1" />
                         Back to Users
                     </Link>
-                    <div className="border-l border-gray-300 dark:border-gray-600 h-6"></div>
-                    <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    <div className="h-6 border-l border-gray-300 dark:border-gray-600"></div>
+                    <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200">
                         Create New User
                     </h2>
                 </div>
             }
         >
-            <Head title="Create User" />
+            <Head title="Create New User" />
 
             <div className="py-8">
-                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden">
-                        <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 border-b border-gray-200 dark:border-gray-600">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                                <UserPlusIcon className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
-                                New User Information
-                            </h3>
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <div className="flex items-center">
+                                <UserIcon className="w-6 h-6 text-blue-600 dark:text-blue-400 mr-3" />
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                    User Information
+                                </h3>
+                            </div>
                             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                Fill in the details below to create a new user account
+                                Fill in the information below to create a new user account
                             </p>
                         </div>
-                        
-                        <form onSubmit={onSubmit} className="p-6">
-                            <div className="space-y-8">
-                                {/* Basic Information Section */}
-                                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                                        <UserIcon className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" />
-                                        Basic Information
-                                    </h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <InputLabel htmlFor="name" value="Full Name" />
-                                            <TextInput 
-                                                id="name"
-                                                type="text"
-                                                name="name"
-                                                value={data.name}
-                                                className="mt-1 block w-full"
-                                                autoComplete="name"
-                                                isFocused={true}
-                                                onChange={(e) => setData('name', e.target.value)}
-                                                placeholder="Enter user's full name"
-                                            />
-                                            <InputError className="mt-2">{errors.name}</InputError>
-                                        </div>
 
-                                        <div>
-                                            <InputLabel htmlFor="email" value="Email Address" />
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                    <EnvelopeIcon className="h-5 w-5 text-gray-400" />
-                                                </div>
-                                                <TextInput 
-                                                    id="email"
-                                                    type="email"
-                                                    name="email"
-                                                    value={data.email}
-                                                    className="mt-1 block w-full pl-10"
-                                                    autoComplete="email"
-                                                    onChange={(e) => setData('email', e.target.value)}
-                                                    placeholder="user@example.com"
-                                                />
-                                            </div>
-                                            <InputError className="mt-2">{errors.email}</InputError>
-                                        </div>
+                        {/* Form */}
+                        <form onSubmit={onSubmit} encType="multipart/form-data" className="p-6 space-y-6">
+                            {/* Basic Information Section */}
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                                <div className="flex items-center mb-6">
+                                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg mr-3">
+                                        <IdentificationIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold text-gray-900 dark:text-white">Basic Information</h4>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Essential user details and contact information</p>
                                     </div>
                                 </div>
 
-                                {/* Security Section */}
-                                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                                        <LockClosedIcon className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" />
-                                        Security
-                                    </h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <InputLabel htmlFor="password" value="Password" />
-                                            <TextInput 
-                                                id="password"
-                                                type="password"
-                                                name="password"
-                                                value={data.password}
-                                                className="mt-1 block w-full"
-                                                autoComplete="new-password"
-                                                onChange={(e) => setData('password', e.target.value)}
-                                                placeholder="Enter a secure password"
-                                            />
-                                            <InputError className="mt-2">{errors.password}</InputError>
-                                        </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <InputLabel htmlFor="name" value="Full Name *" className="font-medium" />
+                                        <TextInput
+                                            id="name"
+                                            type="text"
+                                            name="name"
+                                            value={data.name}
+                                            className="mt-2 block w-full"
+                                            isFocused={true}
+                                            onChange={(e) => setData('name', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.name} className="mt-2" />
+                                    </div>
 
-                                        <div>
-                                            <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
-                                            <TextInput 
-                                                id="password_confirmation"
-                                                type="password"
-                                                name="password_confirmation"
-                                                value={data.password_confirmation}
-                                                className="mt-1 block w-full"
-                                                autoComplete="new-password"
-                                                onChange={(e) => setData('password_confirmation', e.target.value)}
-                                                placeholder="Confirm the password"
-                                            />
-                                            <InputError className="mt-2">{errors.password_confirmation}</InputError>
-                                        </div>
+                                    <div>
+                                        <InputLabel htmlFor="email" value="Email Address *" className="font-medium" />
+                                        <TextInput
+                                            id="email"
+                                            type="email"
+                                            name="email"
+                                            value={data.email}
+                                            className="mt-2 block w-full"
+                                            onChange={(e) => setData('email', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.email} className="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel htmlFor="phone" value="Phone Number" className="font-medium" />
+                                        <TextInput
+                                            id="phone"
+                                            type="tel"
+                                            name="phone"
+                                            value={data.phone}
+                                            className="mt-2 block w-full"
+                                            onChange={(e) => setData('phone', e.target.value)}
+                                        />
+                                        <InputError message={errors.phone} className="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel htmlFor="bio" value="Biography" className="font-medium" />
+                                        <textarea
+                                            id="bio"
+                                            name="bio"
+                                            value={data.bio}
+                                            className="mt-2 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                                            rows={3}
+                                            onChange={(e) => setData('bio', e.target.value)}
+                                            placeholder="Brief description about the user..."
+                                        />
+                                        <InputError message={errors.bio} className="mt-2" />
+                                    </div>
+                                </div>                                {/* Avatar Upload */}
+                                <div className="mt-6">
+                                    <ImageUploaderPreview
+                                        id="avatar"
+                                        name="avatar"
+                                        value={data.avatar}
+                                        onChange={(e) => setData('avatar', e.target.files[0] || null)}
+                                        label="Profile Picture (Optional)"
+                                        description="Upload a profile picture for this user - leave empty for default initials avatar"
+                                        acceptedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
+                                        maxSizeInMB={2}
+                                        placeholder="Click to upload or drag and drop an avatar image"
+                                        subtitle="PNG, JPG, GIF, WebP up to 2MB - Optional"
+                                        aspectRatio="square"
+                                        showZoom={true}
+                                        showRemove={true}
+                                        error={errors.avatar}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Professional Information Section */}
+                            <div className="bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                                <div className="flex items-center mb-6">
+                                    <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg mr-3">
+                                        <BriefcaseIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold text-gray-900 dark:text-white">Professional Information</h4>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Work-related details and organizational structure</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <InputLabel htmlFor="position" value="Position" className="font-medium" />
+                                        <DynamicSelect
+                                            id="position"
+                                            name="position"
+                                            value={data.position}
+                                            onChange={(e) => setData('position', e.target.value)}
+                                            apiEndpoint="/api/users/positions"
+                                            placeholder="Select a position..."
+                                            allowEmpty={true}
+                                            emptyLabel="No specific position"
+                                            className="mt-2"
+                                        />
+                                        <InputError message={errors.position} className="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel htmlFor="department" value="Department" className="font-medium" />
+                                        <DynamicSelect
+                                            id="department"
+                                            name="department"
+                                            value={data.department}
+                                            onChange={(e) => setData('department', e.target.value)}
+                                            apiEndpoint="/api/users/departments"
+                                            placeholder="Select a department..."
+                                            allowEmpty={true}
+                                            emptyLabel="No specific department"
+                                            className="mt-2"
+                                        />
+                                        <InputError message={errors.department} className="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel htmlFor="role" value="Role *" className="font-medium" />
+                                        <DynamicSelect
+                                            id="role"
+                                            name="role"
+                                            value={data.role}
+                                            onChange={(e) => setData('role', e.target.value)}
+                                            staticOptions={roles}
+                                            placeholder="Select user role..."
+                                            allowEmpty={false}
+                                            required
+                                            className="mt-2"
+                                        />
+                                        <InputError message={errors.role} className="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel htmlFor="status" value="Status *" className="font-medium" />
+                                        <DynamicSelect
+                                            id="status"
+                                            name="status"
+                                            value={data.status}
+                                            onChange={(e) => setData('status', e.target.value)}
+                                            apiEndpoint="/api/users/statuses"
+                                            placeholder="Select user status..."
+                                            allowEmpty={false}
+                                            required
+                                            className="mt-2"
+                                        />
+                                        <InputError message={errors.status} className="mt-2" />
+                                    </div>
+
+                                    <div className="md:col-span-2">
+                                        <InputLabel htmlFor="timezone" value="Timezone" className="font-medium" />
+                                        <DynamicSelect
+                                            id="timezone"
+                                            name="timezone"
+                                            value={data.timezone}
+                                            onChange={(e) => setData('timezone', e.target.value)}
+                                            staticOptions={timezones}
+                                            placeholder="Select timezone..."
+                                            allowEmpty={false}
+                                            className="mt-2"
+                                        />
+                                        <InputError message={errors.timezone} className="mt-2" />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Form Actions */}
-                            <div className="flex items-center justify-end space-x-4 mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
-                                <ActionButton
+                            {/* Security Section */}
+                            <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
+                                <div className="flex items-center mb-6">
+                                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg mr-3">
+                                        <LockClosedIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold text-gray-900 dark:text-white">Security & Access</h4>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Set up login credentials for the new user</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <InputLabel htmlFor="password" value="Password *" className="font-medium" />
+                                        <TextInput
+                                            id="password"
+                                            type="password"
+                                            name="password"
+                                            value={data.password}
+                                            className="mt-2 block w-full"
+                                            onChange={(e) => setData('password', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.password} className="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel htmlFor="password_confirmation" value="Confirm Password *" className="font-medium" />
+                                        <TextInput
+                                            id="password_confirmation"
+                                            type="password"
+                                            name="password_confirmation"
+                                            value={data.password_confirmation}
+                                            className="mt-2 block w-full"
+                                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.password_confirmation} className="mt-2" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                <Link
                                     href={route('users.index')}
-                                    variant="secondary"
-                                    icon={<XMarkIcon className="w-4 h-4" />}
+                                    className="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors duration-200"
                                 >
                                     Cancel
-                                </ActionButton>
-                                <ActionButton
-                                    type="submit"
-                                    variant="primary"
-                                    icon={<UserPlusIcon className="w-4 h-4" />}
-                                >
-                                    Create User
-                                </ActionButton>
+                                </Link>
+                                <PrimaryButton disabled={processing} className="inline-flex items-center px-6 py-2">
+                                    {processing ? (
+                                        <>
+                                            <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Creating...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <UserIcon className="w-4 h-4 mr-2" />
+                                            Create User
+                                        </>
+                                    )}
+                                </PrimaryButton>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </AuthenticatedLayout>
-    )
+    );
 }

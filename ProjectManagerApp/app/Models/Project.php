@@ -22,6 +22,14 @@ class Project extends Model
         'updated_by',
     ];
 
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class);

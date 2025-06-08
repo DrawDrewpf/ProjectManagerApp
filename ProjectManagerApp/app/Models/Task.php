@@ -25,6 +25,14 @@ class Task extends Model
         'project_id',
     ];
 
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
+
     public function project()
     {
         return $this->belongsTo(Project::class);

@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 export default forwardRef(function SelectInput(
-    { className = '', children, ...props },
+    { className = '', children, options = [], ...props },
     ref,
 ) {
     const localRef = useRef(null);
@@ -9,7 +9,6 @@ export default forwardRef(function SelectInput(
     useImperativeHandle(ref, () => ({
         focus: () => localRef.current?.focus(),
     }));
-
 
     return (
         <select
@@ -20,8 +19,14 @@ export default forwardRef(function SelectInput(
             }
             ref={localRef}
         >
-
-        {children}
+            {options.length > 0 
+                ? options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                  ))
+                : children
+            }
         </select>
     );
 });

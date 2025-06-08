@@ -30,6 +30,14 @@ class StoreUserRequest extends FormRequest
                 "confirmed",
                  Password::min(8)->letters()->symbols()->numbers(),
             ],
+            "avatar" => "nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048",
+            "phone" => "nullable|string|max:20",
+            "bio" => "nullable|string|max:1000",
+            "position" => "nullable|string|max:255",
+            "department" => "nullable|string|max:255",
+            "status" => "required|in:active,inactive,suspended",
+            "role" => "required|in:admin,manager,user",
+            "timezone" => "nullable|string|max:50",
         ];
     }
 }
