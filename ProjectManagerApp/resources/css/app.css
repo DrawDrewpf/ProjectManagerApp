@@ -189,3 +189,158 @@
 .loading-pulse {
   animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+/* Profile Page Enhancements */
+html {
+  scroll-behavior: smooth;
+}
+
+.profile-section {
+  scroll-margin-top: 2rem;
+}
+
+/* Password Strength Indicator Animation */
+@keyframes strengthGrow {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--strength-width);
+  }
+}
+
+.password-strength-bar {
+  animation: strengthGrow 0.3s ease-out;
+}
+
+/* Profile Card Hover Effects */
+.profile-card {
+  transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Enhanced Button Styles */
+.btn-gradient {
+  background: linear-gradient(135deg, var(--gradient-from), var(--gradient-to));
+  transition: all 0.2s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Modal Backdrop Blur */
+.modal-backdrop {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Profile Picture Upload Enhancements */
+.upload-zone {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.upload-zone:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.upload-zone::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(79, 70, 229, 0.05) 100%);
+  border-radius: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.upload-zone:hover::before {
+  opacity: 1;
+}
+
+.upload-icon-bounce {
+  animation: bounce-gentle 2s infinite;
+}
+
+@keyframes bounce-gentle {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Avatar hover effects */
+.avatar-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.avatar-container:hover::after {
+  transform: translateX(100%);
+}
+
+/* Form Field Focus Ring Enhancement */
+.form-field:focus-within {
+  transform: scale(1.01);
+  transition: transform 0.2s ease;
+}
+
+/* Loading Spinner Enhancement */
+@keyframes pulseGlow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.loading-pulse {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Success Animation */
+@keyframes successSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.success-notification {
+  animation: successSlide 0.3s ease-out;
+}
