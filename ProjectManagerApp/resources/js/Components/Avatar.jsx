@@ -41,9 +41,9 @@ export default function Avatar({
     };
 
     const baseClasses = `
-        inline-flex items-center justify-center rounded-full font-medium
+        inline-flex items-center justify-center rounded-full font-medium ring-2 ring-white dark:ring-gray-800 shadow-lg
         ${sizeClasses[size]}
-        ${onClick ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}
+        ${onClick ? 'cursor-pointer hover:opacity-80 hover:scale-105 transition-all duration-200' : ''}
         ${className}
     `;
 
@@ -64,7 +64,7 @@ export default function Avatar({
             ) : null}
             
             <div
-                className={`${baseClasses} bg-blue-500 text-white ${user?.avatar_url ? 'hidden' : 'flex'}`}
+                className={`${baseClasses} bg-gradient-to-br from-blue-500 to-blue-600 text-white ${user?.avatar_url ? 'hidden' : 'flex'}`}
                 onClick={onClick}
                 style={{ display: user?.avatar_url ? 'none' : 'flex' }}
             >
@@ -74,7 +74,7 @@ export default function Avatar({
             {showStatus && user?.status && (
                 <span 
                     className={`
-                        absolute bottom-0 right-0 block rounded-full ring-2 ring-white
+                        absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-800 shadow-sm
                         ${statusIndicatorSize[size]}
                         ${statusColors[user.status] || 'bg-gray-400'}
                     `}

@@ -1,24 +1,15 @@
-import { Link, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import Navbar from '@/Components/Navbar';
 import FlashMessages from '@/Components/FlashMessages';
 import { useTheme } from '@/Contexts/ThemeContext';
-import { ToastProvider, useToast } from '@/Contexts/ToastContext';
-
-import { SunIcon, MoonIcon,ArrowRightEndOnRectangleIcon,UserIcon } from '@heroicons/react/24/outline';
+import { ToastProvider } from '@/Contexts/ToastContext';
 
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
     const { toggle, getCurrentTheme } = useTheme();
     const [currentTheme, setCurrentTheme] = useState(() => getCurrentTheme());
-
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     // Only listen to theme changes to update local state
     useEffect(() => {
@@ -32,266 +23,33 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <ToastProvider>
-            <ToastContent 
-                header={header} 
-                children={children} 
-                user={user}
-                toggle={toggle}
-                currentTheme={currentTheme}
-                showingNavigationDropdown={showingNavigationDropdown}
-                setShowingNavigationDropdown={setShowingNavigationDropdown}
-            />
-        </ToastProvider>
-    );
-}
+            <div className="min-h-screen flex flex-col">
+                <FlashMessages />
+                
+                <Navbar 
+                    toggle={toggle}
+                    currentTheme={currentTheme}
+                    showingNavigationDropdown={showingNavigationDropdown}
+                    setShowingNavigationDropdown={setShowingNavigationDropdown}
+                />
 
-function ToastContent({ header, children, user, toggle, currentTheme, showingNavigationDropdown, setShowingNavigationDropdown }) {
-    return (
-        <div className="min-h-screen flex flex-col"> 
-            <FlashMessages />
-            <nav className="relative border-b border-gray-100 dark:border-gray-700 bg-transparent">
-                {/* Aurora Background Effect  */}
-                <div className="aurora-bg absolute inset-0 "> 
-                    <div className="aurora aurora-blur"></div>
-                    <div className="aurora aurora-2 aurora-blur"></div>
-                    <div className="aurora aurora-3 aurora-blur"></div>
+                <div className="flex flex-col flex-grow w-full h-full bg-white dark:bg-gray-900">
+                    {header && (
+                        <header className="shadow bg-gray-50 dark:bg-gray-800">
+                            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                                {header}
+                            </div>
+                        </header>
+                    )}
+
+                    <main className="flex-grow w-full h-full">
+                        {children}
+                    </main>
                 </div>
-                <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">
-                    <div className="flex h-16 justify-between ">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center ">
-                                <Link href="/">
-                                    <ApplicationLogo variant="mono" className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                                </Link>
-                            </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                                <NavLink
-                                    href={route('projects.index')}
-                                    active={route().current('projects.index')}
-                                >
-                                    Projects
-                                </NavLink>
-                                <NavLink
-                                    href={route('tasks.index')}
-                                    active={route().current('tasks.index')}
-                                >
-                                    All Tasks
-                                </NavLink>
-                                <NavLink
-                                    href={route('users.index')}
-                                    active={route().current('users.index')}
-                                >
-                                    Users
-                                </NavLink>
-                                <NavLink
-                                    href={route('tasks.myTasks')}
-                                    active={route().current('tasks.myTasks')}
-                                >
-                                    My Tasks
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                         <div className="flex items-center">
-                                        <UserIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
-                                            Profile
-                                        </div>
-                                        </Dropdown.Link>
-                                        <Dropdown.Link as="button"
-                                onClick={() => toggle()}
-                            >
-                                <div key={currentTheme} className="flex items-center"> 
-                                    {currentTheme === 'light' ? (
-                                        <>
-                                            <MoonIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
-                                            <span>Dark Mode</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <SunIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
-                                            <span>Light Mode</span>
-                                        </>
-                                    )}
-                                </div>
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                        <div className="flex items-center">
-                                        <ArrowRightEndOnRectangleIcon className="h-5 w-5 me-3 text-gray-600 dark:text-gray-400" />
-                                            Log Out
-                                        </div>
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none dark:text-gray-500 dark:hover:bg-gray-900 dark:hover:text-gray-400 dark:focus:bg-gray-900 dark:focus:text-gray-400"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('projects.index')}
-                            active={route().current('projects.index')}
-                        >
-                            Projects
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('tasks.index')}
-                            active={route().current('tasks.index')}
-                        >
-                            All Tasks
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('users.index')}
-                            active={route().current('users.index')}
-                        >
-                            Users
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('tasks.myTasks')}
-                            active={route().current('tasks.myTasks')}
-                        >
-                            My Tasks
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800 dark:text-gray-200">
-                                {user.name}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-
-                           
-                                        
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            <div className="flex flex-col flex-grow w-full h-full bg-white dark:bg-gray-900"> 
-                {header && (
-                    <header className="shadow bg-gray-50 dark:bg-gray-800"> 
-                        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                            {header}
-                        </div>
-                    </header>
-                )}
-
-                <main className='flex-grow w-full h-full'>
-                    {children}
-                </main>
+                
+                {/* Flash Messages Component */}
+                <FlashMessages />
             </div>
-            
-            {/* Flash Messages Component */}
-            <FlashMessages />
-        </div>
+        </ToastProvider>
     );
 }
