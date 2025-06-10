@@ -17,6 +17,7 @@
   left: 0;
   z-index: -1;
   overflow: hidden;
+  min-height: 50vh;
 }
 
 .aurora-blur {
@@ -38,10 +39,10 @@
   );
   background-size: 200% 200%;
   animation: aurora-animation 15s ease infinite;
-  width: 150%;
-  height: 150%;
-  left: -25%;
-  top: -25%;
+  width: 200%;
+  height: 200%;
+  left: -50%;
+  top: -50%;
   transform: rotate(-10deg);
 }
 
@@ -57,6 +58,10 @@
   );
   animation-delay: -5s;
   opacity: 0.7;
+  width: 180%;
+  height: 180%;
+  left: -40%;
+  top: -40%;
 }
 
 .aurora-3 {
@@ -71,6 +76,10 @@
   );
   animation-delay: -10s;
   opacity: 0.6;
+  width: 160%;
+  height: 160%;
+  left: -30%;
+  top: -30%;
 }
 
 /* Dark Mode Aurora */
@@ -236,6 +245,7 @@ html {
 
 /* Modal Backdrop Blur */
 .modal-backdrop {
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   background: rgba(0, 0, 0, 0.5);
 }
