@@ -219,7 +219,7 @@ export default function DataTable({
                                 placeholder={globalSearchPlaceholder}
                                 defaultValue={queryParams.search} 
                                 onChange={handleGlobalSearchChange}
-                                className="pl-10 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-lg shadow-sm"
+                                className="pl-10 rounded-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
                             />
                         </div>
                     )}
