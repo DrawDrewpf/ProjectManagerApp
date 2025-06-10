@@ -226,12 +226,42 @@ export default function DataTable({
                     {createUrl && (
                         <Link
                             href={createUrl}
-                            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border border-transparent rounded-lg font-medium text-sm text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            className="group relative inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 hover:from-blue-600 hover:via-blue-700 hover:to-purple-700 active:from-blue-700 active:via-blue-800 active:to-purple-800 disabled:from-gray-400 disabled:via-gray-500 disabled:to-gray-600 border border-transparent font-medium text-xs sm:text-sm text-white shadow-lg hover:shadow-xl active:shadow-md disabled:shadow-none transform hover:scale-[1.02] active:scale-[0.98] disabled:scale-100 transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 disabled:focus:ring-0 overflow-hidden min-w-0 flex-shrink-0 select-none"
+                            aria-label={`${createButtonLabel} - Crear nuevo elemento`}
+                            role="button"
+                            tabIndex={0}
                         >
-                            <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {/* Efecto de brillo animado */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out pointer-events-none" aria-hidden="true"></div>
+                            
+                            {/* Backdrop blur para mayor profundidad */}
+                            <div className="absolute inset-0 rounded-full bg-white/5 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true"></div>
+                            
+                            {/* Icono responsivo con micro-animación */}
+                            <svg 
+                                className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 relative z-10 transition-all duration-300 group-hover:rotate-90 group-hover:scale-110 group-active:scale-95" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                             </svg>
-                            {createButtonLabel}
+                            
+                            {/* Texto responsivo con mejor tipografía */}
+                            <span className="truncate min-w-0 relative z-10 font-semibold tracking-wide">
+                                <span className="hidden sm:inline transition-all duration-200 group-hover:tracking-wider">
+                                    {createButtonLabel}
+                                </span>
+                                <span className="sm:hidden font-bold">
+                                    {createButtonLabel.length > 10 ? 'Crear' : createButtonLabel}
+                                </span>
+                            </span>
+                            
+                            {/* Indicador de carga opcional */}
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-active:opacity-20 transition-opacity duration-150" aria-hidden="true">
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            </div>
                         </Link>
                     )}
                 </div>
