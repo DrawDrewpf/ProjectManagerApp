@@ -14,8 +14,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Seeder 
+        $this->call(EnhancedUserSeeder::class);
 
+        // Create 10 random users
+        User::factory(10)->create();
+
+        // User specific
         User::factory()->create([
             'name' => 'Drew User',
             'email' => 'drewpf@e.com',
