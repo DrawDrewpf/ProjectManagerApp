@@ -107,7 +107,8 @@ class User extends Authenticatable
         if ($this->avatar_path) {
             $url = asset('storage/' . $this->avatar_path);
             // Add timestamp to prevent caching issues
-            return $url . '?t=' . $this->updated_at->timestamp;
+            $timestamp = $this->updated_at ? $this->updated_at->timestamp : time();
+            return $url . '?t=' . $timestamp;
         }
         
         // Return default avatar based on user initials

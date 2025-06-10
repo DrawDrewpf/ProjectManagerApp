@@ -62,8 +62,8 @@ export default function TableCell({
                     <div className="flex items-center justify-center">
                         <img 
                             src={value} 
-                            alt="Table image" 
-                            className="w-10 h-10 rounded-full object-cover mx-auto"
+                            alt="Task image" 
+                            className="w-10 h-10 rounded-full object-cover mx-auto border border-gray-200 dark:border-gray-600"
                             onError={(e) => {
                                 e.target.style.display = 'none';
                                 const fallback = e.target.nextElementSibling;
@@ -71,16 +71,18 @@ export default function TableCell({
                                     fallback.style.display = 'flex';
                                 }
                             }}
-                            onLoad={() => {
-                            }}
                         />
-                        <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto" style={{display: 'none'}}>
-                            <span className="text-xs text-gray-500">No img</span>
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center mx-auto border border-gray-200 dark:border-gray-600" style={{display: 'none'}}>
+                            <svg className="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
                         </div>
                     </div>
                 ) : (
-                    <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto">
-                        <span className="text-xs text-gray-500">Debug: {JSON.stringify(value)}</span>
+                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center mx-auto border border-indigo-200 dark:border-indigo-600 shadow-sm">
+                        <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
                     </div>
                 );
             
