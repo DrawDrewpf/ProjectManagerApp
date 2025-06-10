@@ -1,4 +1,4 @@
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage, router } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 
 import InputError from '@/Components/InputError';
@@ -35,16 +35,20 @@ export default function UpdateProfileInformation({
         // Create FormData to handle file uploads
         const formData = new FormData();
         formData.append('name', data.name);
-        formData.append('email', data.email);
         formData.append('_method', 'PATCH');
         
         if (data.avatar) {
             formData.append('avatar', data.avatar);
         }
 
-        patch(route('profile.update'), {
-            data: formData,
+        router.post(route('profile.update'), formData, {
             forceFormData: true,
+            onSuccess: (page) => {
+                // Reset the avatar field after successful upload
+                setData('avatar', null);
+                // Reload to get the updated user data including new avatar
+                router.reload();
+            }
         });
     };
 
@@ -125,7 +129,7 @@ export default function UpdateProfileInformation({
                                     maxSizeInMB={2}
                                     showZoom={true}
                                     showRemove={true}
-                                    className="h-56"
+                                    className="h-full"
                                     error={errors.avatar}
                                     acceptedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
                                 />
@@ -162,7 +166,7 @@ export default function UpdateProfileInformation({
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="email" value="Email Address" className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" />
+                                <InputLabel htmlFor="email" value="Email Address (Read Only)" className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" />
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                         <EnvelopeIcon className="h-5 w-5 text-gray-400" />
@@ -170,14 +174,17 @@ export default function UpdateProfileInformation({
                                     <TextInput
                                         id="email"
                                         type="email"
-                                        className="pl-12"
+                                        className="pl-12 bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
                                         value={data.email}
-                                        onChange={(e) => setData('email', e.target.value)}
-                                        required
+                                        disabled
+                                        readOnly
                                         autoComplete="username"
                                         placeholder="Enter your email address"
                                     />
                                 </div>
+                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    Email address cannot be changed from this form. Contact support if you need to update your email.
+                                </p>
                                 <InputError className="mt-2" message={errors.email} />
                             </div>
                         </div>

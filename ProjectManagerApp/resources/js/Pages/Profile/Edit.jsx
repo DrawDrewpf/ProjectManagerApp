@@ -58,18 +58,6 @@ export default function Edit({ mustVerifyEmail, status }) {
                             </p>
                         </div>
                     </div>
-                    
-                    <div className="hidden sm:flex items-center space-x-4">
-                        <div className="text-right">
-                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                {user.name}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {user.email}
-                            </p>
-                        </div>
-                        <Avatar user={user} size="lg" showStatus={true} className="ring-2 ring-white dark:ring-gray-800 shadow-lg" />
-                    </div>
                 </div>
             }
         >

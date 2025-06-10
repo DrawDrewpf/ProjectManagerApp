@@ -31,6 +31,7 @@ class User extends Authenticatable
         'position',
         'department',
         'status',
+        'role',
         'timezone',
     ];
 
@@ -104,7 +105,9 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute()
     {
         if ($this->avatar_path) {
-            return asset('storage/' . $this->avatar_path);
+            $url = asset('storage/' . $this->avatar_path);
+            // Add timestamp to prevent caching issues
+            return $url . '?t=' . $this->updated_at->timestamp;
         }
         
         // Return default avatar based on user initials
