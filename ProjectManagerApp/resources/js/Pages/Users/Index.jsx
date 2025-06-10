@@ -23,14 +23,14 @@ export default function Index({ auth, users, queryParams = null }) {
             label: 'User', 
             sortable: false,
             render: (item) => (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
                     <Avatar user={item} size="sm" showStatus={true} />
-                    <div>
-                        <div className="font-medium text-gray-900 dark:text-white">
+                    <div className="min-w-0 flex-1">
+                        <div className="font-medium text-gray-900 dark:text-white truncate">
                             {item.name}
                         </div>
                         {item.position && (
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
                                 {item.position}
                             </div>
                         )}

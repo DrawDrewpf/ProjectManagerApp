@@ -8,12 +8,12 @@ export default function Avatar({
     onClick = null 
 }) {
     const sizeClasses = {
-        xs: 'h-6 w-6 text-xs',
-        sm: 'h-8 w-8 text-sm',
-        md: 'h-10 w-10 text-base',
-        lg: 'h-16 w-16 text-xl',
-        xl: 'h-20 w-20 text-2xl',
-        '2xl': 'h-24 w-24 text-3xl',
+        xs: 'h-4 w-4 sm:h-6 sm:w-6 text-xs',
+        sm: 'h-6 w-6 sm:h-8 sm:w-8 text-xs sm:text-sm',
+        md: 'h-8 w-8 sm:h-10 sm:w-10 text-sm sm:text-base',
+        lg: 'h-12 w-12 sm:h-16 sm:w-16 text-lg sm:text-xl',
+        xl: 'h-16 w-16 sm:h-20 sm:w-20 text-xl sm:text-2xl',
+        '2xl': 'h-20 w-20 sm:h-24 sm:w-24 text-2xl sm:text-3xl',
     };
 
     const statusColors = {
@@ -32,23 +32,23 @@ export default function Avatar({
     };
 
     const statusIndicatorSize = {
-        xs: 'h-1.5 w-1.5',
-        sm: 'h-2 w-2',
-        md: 'h-2.5 w-2.5',
-        lg: 'h-4 w-4',
-        xl: 'h-5 w-5',
-        '2xl': 'h-6 w-6',
+        xs: 'h-1 w-1 sm:h-1.5 sm:w-1.5',
+        sm: 'h-1.5 w-1.5 sm:h-2 sm:w-2',
+        md: 'h-2 w-2 sm:h-2.5 sm:w-2.5',
+        lg: 'h-3 w-3 sm:h-4 sm:w-4',
+        xl: 'h-4 w-4 sm:h-5 sm:w-5',
+        '2xl': 'h-5 w-5 sm:h-6 sm:w-6',
     };
 
     const baseClasses = `
-        inline-flex items-center justify-center rounded-full font-medium ring-2 ring-white dark:ring-gray-800 shadow-lg
+        inline-flex items-center justify-center rounded-full font-medium ring-1 ring-white dark:ring-gray-800 shadow-sm
         ${sizeClasses[size]}
-        ${onClick ? 'cursor-pointer hover:opacity-80 hover:scale-105 transition-all duration-200' : ''}
+        ${onClick ? 'cursor-pointer hover:opacity-80 transition-all duration-200' : ''}
         ${className}
-    `;
+    `.trim();
 
     return (
-        <div className="relative inline-block">
+        <div className="relative inline-block flex-shrink-0">
             {user?.avatar_url ? (
                 <img
                     src={user.avatar_url}
@@ -74,7 +74,7 @@ export default function Avatar({
             {showStatus && user?.status && (
                 <span 
                     className={`
-                        absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-800 shadow-sm
+                        absolute bottom-0 right-0 block rounded-full ring-1 ring-white dark:ring-gray-800 shadow-sm
                         ${statusIndicatorSize[size]}
                         ${statusColors[user.status] || 'bg-gray-400'}
                     `}
