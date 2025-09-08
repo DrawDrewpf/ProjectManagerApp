@@ -6,12 +6,6 @@ Complete web application for **project and task management** developed with **Re
 
 ---
 
-## 📸 Demo / Screenshots
-
-*[Add screenshots or demo GIF here]*
-
----
-
 ## ⚙️ Technologies Used
 
 ### Backend
@@ -164,6 +158,9 @@ app/
 - ✅ Query optimization with Eloquent
 - ✅ Automated testing with Pest
 
+### Security Configuration
+- 🔓 **CSRF Token**: For portfolio demonstration purposes, CSRF protection has been configured to allow open access. This enables visitors to fully interact with the application without authentication restrictions. **Note**: In a production environment, proper CSRF protection should be implemented.
+
 ---
 
 ## 🛠️ Installation and Setup
@@ -214,6 +211,30 @@ npm run dev
 ```bash
 php artisan serve
 ```
+
+---
+
+## 🚀 How to Open the Project
+
+To run the project in development mode, you need to open **two terminals**:
+
+**Terminal 1 - Frontend Development Server:**
+```bash
+cd ProjectManagerApp
+npm run dev
+```
+
+**Terminal 2 - Backend Server:**
+```bash
+cd ProjectManagerApp
+php artisan serve
+```
+
+The application will be available at:
+- Frontend: `http://localhost:5173` (Vite dev server)
+- Backend: `http://localhost:8000` (Laravel server)
+
+> **Note**: Make sure both servers are running simultaneously for the application to work correctly.
 
 ---
 

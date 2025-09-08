@@ -6,12 +6,6 @@ Aplicación web completa para la **gestión de proyectos y tareas** desarrollada
 
 ---
 
-## 📸 Demo / Capturas de Pantalla
-
-*[Agregar capturas de pantalla o GIF demostrativo aquí]*
-
----
-
 ## ⚙️ Tecnologías utilizadas
 
 ### Backend
@@ -164,6 +158,9 @@ app/
 - ✅ Optimización de consultas con Eloquent
 - ✅ Testing automatizado con Pest
 
+### Configuración de Seguridad
+- 🔓 **Token CSRF**: Para fines de demostración del portfolio, la protección CSRF ha sido configurada para permitir acceso abierto. Esto permite que los visitantes puedan interactuar completamente con la aplicación sin restricciones de autenticación. **Nota**: En un entorno de producción, se debería implementar la protección CSRF adecuada.
+
 ---
 
 ## 🛠️ Instalación y configuración
@@ -214,6 +211,30 @@ npm run dev
 ```bash
 php artisan serve
 ```
+
+---
+
+## 🚀 Cómo abrir el proyecto
+
+Para ejecutar el proyecto en modo desarrollo, necesitas abrir **dos terminales**:
+
+**Terminal 1 - Servidor de desarrollo Frontend:**
+```bash
+cd ProjectManagerApp
+npm run dev
+```
+
+**Terminal 2 - Servidor Backend:**
+```bash
+cd ProjectManagerApp
+php artisan serve
+```
+
+La aplicación estará disponible en:
+- Frontend: `http://localhost:5173` (servidor dev de Vite)
+- Backend: `http://localhost:8000` (servidor de Laravel)
+
+> **Nota**: Asegúrate de que ambos servidores estén ejecutándose simultáneamente para que la aplicación funcione correctamente.
 
 ---
 
